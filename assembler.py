@@ -45,7 +45,7 @@ for instruction in instructions:
     # R-Type Instruction
     if operation in R_encoding.R_operations:
         final=""
-        final+=R_encoding.R_opcode
+        final+=R_encoding.R_oppcode
         #We will also worry about performing the actual operation later
 
         rd,rs1,rs2=inp[1].split(",") # gives us rd,rs1,rs2 IN THAT ORDER
