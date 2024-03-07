@@ -8,7 +8,13 @@ Some Terminology:
 6. sp: Stack Pointer.
 """
 
-import R_encoding
+import Encoding.R_encoding as R_encoding
+import Encoding.I_encoding as I_encoding
+import Encoding.S_encoding as S_encoding
+import Encoding.B_encoding as B_encoding
+import Encoding.U_encoding as U_encoding
+import Encoding.J_encoding as J_encoding
+
 from registers import Register,register_address
 
 # Initializing Registers with values set to 0
