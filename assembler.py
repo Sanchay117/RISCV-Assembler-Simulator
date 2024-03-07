@@ -34,6 +34,7 @@ assembly = open("test_assembly.txt","r")
 instructions=assembly.readlines()
 
 # Assuming Instructions are of the form "operation r1,r2,r3"
+# That is operation and operands seperated by space and operands themselves seperated by commas
 
 for instruction in instructions:
     instruction=instruction.strip() # Removing /n from each line
@@ -44,17 +45,12 @@ for instruction in instructions:
 
     # R-Type Instruction
     if operation in R_encoding.R_operations:
-        final=""
-        final+=R_encoding.R_oppcode
+
         #We will also worry about performing the actual operation later
 
         rd,rs1,rs2=inp[1].split(",") # gives us rd,rs1,rs2 IN THAT ORDER
 
-        final+=register_address[rd]
-        final+=R_encoding.R_funct3[operation]
-        final+=register_address[rs1]
-        final+=register_address[rs2]
-        final+=R_encoding.R_funct7[operation]
+        final = R_encoding.R_oppcode + register_address[rd] + R_encoding.R_funct3[operation]+ register_address[rs1] + register_address[rs2] + R_encoding.R_funct7[operation]
 
         out.append(final)
 
