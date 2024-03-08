@@ -1,21 +1,21 @@
-#from R_encoding import R_operations
-#from I_encoding import I_operations
-#from S_encoding import S_operations
-#from B_encoding import B_operations
-#from U_encoding import U_operations
-#from J_encoding import J_operations
-R_operations = ["add","sub","sll","slt","sltu","xor","srl","or","and"]
-I_operations = ["lw","addi","sltiu","jalr"]
-S_operations = ["sw"]
-B_operations = ["beq","bne","blt","bge","bltu","bgeu"]
-U_operations = ["lui","auipc"]
-J_operations = ["jal"]
+from ..Encoding import R_encoding
+from ..Encoding import I_encoding
+from ..Encoding import S_encoding
+from ..Encoding import B_encoding
+from ..Encoding import U_encoding
+from ..Encoding import J_encoding
+from ..Encoding import R_encoding
+
+# Now To Access Operations you can use R_encoding.R_operations
+# what you have done is still ok but reduces the modularity of the code
+# -Sanchay
+
 def check_instruction(operation, operands):
     # Check if the operation is in the appropriate list
-    if operation in R_operations:
+    if operation in R_encoding.R_operations:
         # For R Type instructions, check if there are exactly three operands
         return len(operands) == 3
-    elif operation in I_operations or operation in S_operations or operation in B_operations:
+    elif operation in I_encoding.I_operations or operation in S_encoding.S_operations or operation in B_encoding.B_operations:
         # For I, S, and B Type instructions, check if there are exactly two operands
         return len(operands) == 2
     elif operation in U_operations or operation in J_operations:
