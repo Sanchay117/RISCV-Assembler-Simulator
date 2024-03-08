@@ -65,9 +65,8 @@ while pc<lines:
     
     if operation in B_encoding.B_operations:
         pass
-    
-    pc+=1
 
+    # S-Type Instruction
     if operation in S_encoding.S_operations:
         
         rs2,k = inp[1].split(',')    #splitting to get for example: rs2,k =  t1,20(t0)
@@ -80,6 +79,7 @@ while pc<lines:
 
         out.append(final)
     
+    # U-Type Instruction
     if operation in U_encoding.U_operations:
 
         rd,imm = inp[1].split(',')      #splitting to get for example rd,imm = t0,20
@@ -89,6 +89,8 @@ while pc<lines:
         final = imm[-32:-11] + register_address[rd] + U_encoding.U_oppcode
 
         out.append(final)
+
+    pc+=1 # Always keep this at the last of the loop!!!
     
 
 assembly.close()
