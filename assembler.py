@@ -57,7 +57,7 @@ while pc<lines:
 
         rd,rs1,rs2=inp[1].split(",") # gives us rd,rs1,rs2 IN THAT ORDER
 
-        final = R_encoding.R_oppcode + register_address[rd] + R_encoding.R_funct3[operation]+ register_address[rs1] + register_address[rs2] + R_encoding.R_funct7[operation]
+        final = R_encoding.R_funct7[operation] + register_address[rs2] + register_address[rs1] + R_encoding.R_funct3[operation] + register_address[rd] +R_encoding.R_oppcode
 
         out.append(final)
     
