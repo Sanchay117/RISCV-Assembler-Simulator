@@ -36,8 +36,15 @@ instructions=assembly.readlines()
 # Assuming Instructions are of the form "operation r1,r2,r3"
 # That is operation and operands seperated by space and operands themselves seperated by commas
 
-for instruction in instructions:
-    instruction=instruction.strip() # Removing /n from each line
+lines=len(instructions)
+
+pc=0 # program counter
+
+while pc<lines:
+
+    instruction = instructions[pc]
+
+    instruction=instruction.strip() # Removing /n and spaces(leading and trailing both) from each line
     # but what about last line you ask -> we shall worry about it later
     
     inp=instruction.split(" ")
@@ -53,6 +60,13 @@ for instruction in instructions:
         final = R_encoding.R_oppcode + register_address[rd] + R_encoding.R_funct3[operation]+ register_address[rs1] + register_address[rs2] + R_encoding.R_funct7[operation]
 
         out.append(final)
+    
+    # Branching
+    
+    if operation in B_encoding.B_operations:
+        pass
+    
+    pc+=1
 
 assembly.close()
 
