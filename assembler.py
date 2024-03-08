@@ -130,7 +130,7 @@ while pc<lines:
 
         imm = U_encoding.binary(imm) #converting immediate value to 32 bits binary string
 
-        final = imm[-32:-11] + register_address[rd] + U_encoding.U_oppcode
+        final = imm[-32:-12] + register_address[rd] + U_encoding.U_oppcode[operation]
 
     out.append(final)
 
