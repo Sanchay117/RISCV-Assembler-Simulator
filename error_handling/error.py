@@ -18,7 +18,7 @@ def check_instruction(operation, operands):
     elif operation in I_encoding.I_operations or operation in S_encoding.S_operations or operation in B_encoding.B_operations:
         # For I, S, and B Type instructions, check if there are exactly two operands
         return len(operands) == 2
-    elif operation in U_operations or operation in J_operations:
+    elif operation in U_encoding.U_operations or operation in J_encoding.J_operations:
         # For U and J Type instructions, check if there is exactly one operand
         return len(operands) == 1
     else:
