@@ -54,6 +54,29 @@ for instruction in instructions:
 
         out.append(final)
 
+    if operation in S_encoding.S_operations:
+        
+        rs2,k = inp[1].split(',')    #splitting to get for example: rs2,k =  t1,20(t0)
+        k = k.rstrip(')')               # k = 20(t0
+        imm,rs1 = k.split('(')      #imm,rs1 = 20,t0
+
+        imm = S_encoding.binary(imm)      #converting immediate value to 12bit binary string
+
+        final = imm[-12:-5] + register_address[rs2] + register_address[rs1] + S_encoding.S_funct3[operation] + imm[-5:] + S_encoding.S_oppcode
+
+        out.append(final)
+    
+    if operation in U_encoding.U_operations:
+
+        rd,imm = inp[1].split(',')      #splitting to get for example rd,imm = t0,20
+
+        imm = U_encoding.binary(imm) #converting immediate value to 32 bits binary string
+
+        final = imm[-32:-11] + register_address[rd] + U_encoding.U_oppcode
+
+        out.append(final)
+    
+
 assembly.close()
 
 # Outputting to a txt file for now....
