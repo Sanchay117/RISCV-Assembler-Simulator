@@ -17,12 +17,23 @@ import Encoding.J_encoding as J_encoding
 
 from registers import Register,register_address
 
+# Functions
+
+def binary_to_specified_len(binary,length):
+
+    # Converts The binary string "0bxyz" to specified length
+    # For example the built in func (bin) : bin(3) returns "0b11"
+    # so if this function is called with ("0b11",5) it will return : "00011" (with 5 binary digits)
+
+    binary=binary[2:]
+    trailing_zeros=length-len(binary)
+    return ("0"*trailing_zeros + binary)
+
 # Initializing Registers with values set to 0
 
 registers={}
 
-for i in range(32):
-    key = "r"+str(i)
+for key in register_address:
     registers[key]=Register(register_address[key])
 
 # Reading Assembly
@@ -59,12 +70,15 @@ while pc<lines:
 
         final = R_encoding.R_funct7[operation] + register_address[rs2] + register_address[rs1] + R_encoding.R_funct3[operation] + register_address[rd] +R_encoding.R_oppcode
 
-        out.append(final)
     
     # Branching
     
     if operation in B_encoding.B_operations:
-        pass
+        
+        rs1,rs2,imm=inp[1].split(",")
+        binary=bin(int(imm))
+        imm_12bit = binary_to_specified_len(binary,12)
+        final = imm_12bit[-12:-5] + register_address[rs2] + register_address[rs1] + B_encoding.B_funct3[operation] + imm_12bit[-5:] + B_encoding.B_oppcode
 
     # S-Type Instruction
     if operation in S_encoding.S_operations:
@@ -76,8 +90,6 @@ while pc<lines:
         imm = S_encoding.binary(imm)      #converting immediate value to 12bit binary string
 
         final = imm[-12:-5] + register_address[rs2] + register_address[rs1] + S_encoding.S_funct3[operation] + imm[-5:] + S_encoding.S_oppcode
-
-        out.append(final)
     
     # U-Type Instruction
     if operation in U_encoding.U_operations:
@@ -88,7 +100,7 @@ while pc<lines:
 
         final = imm[-32:-11] + register_address[rd] + U_encoding.U_oppcode
 
-        out.append(final)
+    out.append(final)
 
     pc+=1 # Always keep this at the last of the loop!!!
     
