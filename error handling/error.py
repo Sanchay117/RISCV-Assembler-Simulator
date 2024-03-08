@@ -1,9 +1,9 @@
-import Encoding.R_encoding as R_encoding
-import Encoding.I_encoding as I_encoding
-import Encoding.S_encoding as S_encoding
-import Encoding.B_encoding as B_encoding
-import Encoding.U_encoding as U_encoding
-import Encoding.J_encoding as J_encoding
+from R_encoding import R_operations
+from I_encoding import I_operations
+from S_encoding import S_operations
+from B_encoding import B_operations
+from U_encoding import U_operations
+from J_encoding import J_operations
 def check_instruction(operation, operands):
     # Check if the operation is in the appropriate list
     if operation in R_operations:
