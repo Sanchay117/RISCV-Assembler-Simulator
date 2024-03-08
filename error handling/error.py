@@ -1,9 +1,15 @@
-from R_encoding import R_operations
-from I_encoding import I_operations
-from S_encoding import S_operations
-from B_encoding import B_operations
-from U_encoding import U_operations
-from J_encoding import J_operations
+#from R_encoding import R_operations
+#from I_encoding import I_operations
+#from S_encoding import S_operations
+#from B_encoding import B_operations
+#from U_encoding import U_operations
+#from J_encoding import J_operations
+R_operations = ["add","sub","sll","slt","sltu","xor","srl","or","and"]
+I_operations = ["lw","addi","sltiu","jalr"]
+S_operations = ["sw"]
+B_operations = ["beq","bne","blt","bge","bltu","bgeu"]
+U_operations = ["lui","auipc"]
+J_operations = ["jal"]
 def check_instruction(operation, operands):
     # Check if the operation is in the appropriate list
     if operation in R_operations:
