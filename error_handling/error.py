@@ -13,6 +13,9 @@ def check_instruction(operation, operands):
     # Check if the operation is in the appropriate list
     if operation in R_encoding.R_operations or operation in I_encoding.I_operations or operation in B_encoding.B_operations:
         # For R, I, and B Type instructions, check if there are exactly three operands
+        if operation == "lw":
+            # As "lw" operation has only 2 operands.
+          return len(operands) == 2
         return len(operands) == 3
     elif operation in S_encoding.S_operations or operation in U_encoding.U_operations or operation in J_encoding.J_operations:
         # For S, U, and J Type instructions, check if there are exactly two operands
