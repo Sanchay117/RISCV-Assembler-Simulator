@@ -19,15 +19,39 @@ from registers import Register,register_address
 
 # Functions
 
-def binary_to_specified_len(binary,length):
+def binary_to_specified_len(num,length):
 
-    # Converts The binary string "0bxyz" to specified length
-    # For example the built in func (bin) : bin(3) returns "0b11"
-    # so if this function is called with ("0b11",5) it will return : "00011" (with 5 binary digits)
+    # I)Converts a number to unsigned binary string representation with as minimum bits as possible eg: 5 to 0b101
+    # II)Converts The binary string "0bxyz" to specified length by adding required bits.(Sign Extension) eg: if length = 5, 5 to 0b101 to "00101"
+            
+    # Note: for negative numbers -> Their  binary representation are acheived by taking 2's complement of binary representation of abs(num) 
+    #                            -> To do this we perform bitwise xor operation between A(binary representation of abs(num)) 
+    #                               and B(binary of max reprensentable value using "length" amount of bits{111...length times}) and then add 1 to result.
+    #                            -> In python if we perform 10^5 ("^" sign for xor)then,by default bitwise xor is performed on binary 
+    #                               representation of 10 and 5 i.e.(1010 and 0101)
+                                 
+    # For example:1) num = 3
+    #              the built in func (bin) : bin(3) returns "0b11"
+    #              if length  = 5 we get string as "00011"
 
-    binary=binary[2:]
-    trailing_zeros=length-len(binary)
-    return ("0"*trailing_zeros + binary)
+    #             2) num  = -10, length = 5
+    #              bin(10) = 1010
+    #              The expression[bin((abs(num)^((2**length)-1)) + 1)] = [bin(10^31)+1] = bin({01010^11111 in binary} +1) = "10110" 
+    
+
+
+    if(num>=0):
+        bin_string = bin(num)   
+        bin_string = bin_string[2:]
+        bin_string = '0'*(length-len(bin_string)) + bin_string  #extended by adding 0 to leftmost side
+
+    elif(num<0):
+        bin_string = bin((abs(num)^((2**length)-1)) + 1)    # bitwise xor between a(abs(num)) and b(decimal value of binary number 1111....length times) followed by addition of 1
+        bin_string = bin_string[2:]                        
+        bin_string = '1'*(length-len(bin_string)) + bin_string    # extended by adding 1 to leftmost side
+ 
+    return bin_string
+
 
 # Initializing Registers with values set to 0
 
@@ -78,8 +102,8 @@ while pc<lines:
         rs1,rs2,imm=inp[1].split(",")
         branch=int(imm)
         branch-=1
-        binary=bin(int(imm))
-        imm_12bit = binary_to_specified_len(binary,12)
+        # binary=bin(int(imm))
+        imm_12bit = binary_to_specified_len(int(imm),12)
         final = imm_12bit[-12:-5] + register_address[rs2] + register_address[rs1] + B_encoding.B_funct3[operation] + imm_12bit[-5:] + B_encoding.B_oppcode
 
         val1,val2=registers[rs1].value,registers[rs2].value
@@ -119,7 +143,7 @@ while pc<lines:
         k = k.rstrip(')')               # k = 20(t0
         imm,rs1 = k.split('(')      #imm,rs1 = 20,t0
 
-        imm = S_encoding.binary(imm)      #converting immediate value to 12bit binary string
+        imm = binary_to_specified_len(int(imm),12)      #converting immediate value to 12bit binary string
 
         final = imm[-12:-5] + register_address[rs2] + register_address[rs1] + S_encoding.S_funct3[operation] + imm[-5:] + S_encoding.S_oppcode
     
@@ -128,7 +152,7 @@ while pc<lines:
 
         rd,imm = inp[1].split(',')      #splitting to get for example rd,imm = t0,20
 
-        imm = U_encoding.binary(imm) #converting immediate value to 32 bits binary string
+        imm = binary_to_specified_len(int(imm),32) #converting immediate value to 32 bits binary string
 
         final = imm[-32:-12] + register_address[rd] + U_encoding.U_oppcode[operation]
 
