@@ -11,15 +11,12 @@ from ..Encoding import J_encoding
 
 def check_instruction(operation, operands):
     # Check if the operation is in the appropriate list
-    if operation in R_encoding.R_operations:
+    if operation in R_encoding.R_operations or operation in I_encoding.I_operations or operation in B_encoding.B_operations:
         # For R Type instructions, check if there are exactly three operands
         return len(operands) == 3
-    elif operation in I_encoding.I_operations or operation in S_encoding.S_operations or operation in B_encoding.B_operations:
+    elif operation in S_encoding.S_operations or operation in U_encoding.U_operations or operation in J_encoding.J_operations:
         # For I, S, and B Type instructions, check if there are exactly two operands
         return len(operands) == 2
-    elif operation in U_encoding.U_operations or operation in J_encoding.J_operations:
-        # For U and J Type instructions, check if there is exactly one operand
-        return len(operands) == 1
     else:
         # If the operation is not recognized, return False
         return False
