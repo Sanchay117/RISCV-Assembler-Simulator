@@ -1,3 +1,7 @@
 add ra,sp,gp
 sub tp,t0,t2
-blt a4,a5,200
+blt a4,a5,2
+add ra,sp,gp
+sub tp,t0,t2
+add ra,sp,gp
+sub tp,t0,t2
