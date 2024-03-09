@@ -93,11 +93,27 @@ while pc<lines:
         rd,rs1,rs2=inp[1].split(",") # gives us rd,rs1,rs2 IN THAT ORDER
 
         final = R_encoding.R_funct7[operation] + register_address[rs2] + register_address[rs1] + R_encoding.R_funct3[operation] + register_address[rd] +R_encoding.R_oppcode
-
+    
+    # I-Type Instruction
+    elif operation in I_encoding.I_operations:
+        final = I_encoding.I_oppcode[operation]
+        if operation == "lw":
+            rd, other = inp[1].split(",")
+            tempimm, rs = other.split("(")
+            rs = rs.rstrip(")")
+            final = tempimm + register_address[rs] + I_encoding.I_funct3[operation] + register_address[rd] + final
+        else:
+            rd, rs, other = inp[1].split(",") #gives us rd, rs1 and imm/offset
+            final = other + register_address[rs] + I_encoding.I_funct3[operation] + register_address[rd] + final
+        out.append(final)
+    
+    #J-Type Instruction
+    elif operation in J_encoding.J_operations:
+        pass
     
     # Branching
     
-    if operation in B_encoding.B_operations:
+    elif operation in B_encoding.B_operations:
         
         rs1,rs2,imm=inp[1].split(",")
         branch=int(imm)
@@ -137,7 +153,7 @@ while pc<lines:
                 pc+=branch
 
     # S-Type Instruction
-    if operation in S_encoding.S_operations:
+    elif operation in S_encoding.S_operations:
         
         rs2,k = inp[1].split(',')    #splitting to get for example: rs2,k =  t1,20(t0)
         k = k.rstrip(')')               # k = 20(t0
@@ -148,7 +164,7 @@ while pc<lines:
         final = imm[-12:-5] + register_address[rs2] + register_address[rs1] + S_encoding.S_funct3[operation] + imm[-5:] + S_encoding.S_oppcode
     
     # U-Type Instruction
-    if operation in U_encoding.U_operations:
+    elif operation in U_encoding.U_operations:
 
         rd,imm = inp[1].split(',')      #splitting to get for example rd,imm = t0,20
 
