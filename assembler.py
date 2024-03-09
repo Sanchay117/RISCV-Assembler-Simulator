@@ -112,9 +112,9 @@ while pc<lines:
     #J-Type Instruction
     elif operation in J_encoding.J_operations:
         rd, tempimm = inp[1].split(",")
-        final = binary_to_specified_len(int(tempimm), 20) + register_address[rd] + J_encoding.J_oppcode
+        imm = binary_to_specified_len(int(tempimm), 21)
+        final =  imm[-21] + imm[-11:-1] + imm[-12] + imm[-20:-12]+ register_address[rd] + J_encoding.J_oppcode
         out.append(final)
-    
     # Branching
     
     elif operation in B_encoding.B_operations:
