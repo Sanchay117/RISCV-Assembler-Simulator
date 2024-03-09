@@ -103,16 +103,16 @@ while pc<lines:
             rd, other = inp[1].split(",")
             tempimm, rs = other.split("(")
             rs = rs.rstrip(")")
-            final = tempimm + register_address[rs] + I_encoding.I_funct3[operation] + register_address[rd] + final
+            final = binary_to_specified_len(int(tempimm), 12) + register_address[rs] + I_encoding.I_funct3[operation] + register_address[rd] + final
         else:
             rd, rs, other = inp[1].split(",") #gives us rd, rs1 and imm/offset
-            final = other + register_address[rs] + I_encoding.I_funct3[operation] + register_address[rd] + final
+            final = binary_to_specified_len(int(other), 12) + register_address[rs] + I_encoding.I_funct3[operation] + register_address[rd] + final
         out.append(final)
     
     #J-Type Instruction
     elif operation in J_encoding.J_operations:
         rd, tempimm = inp[1].split(",")
-        final = tempimm + register_address[rd] + J_encoding.J_oppcode
+        final = binary_to_specified_len(int(tempimm), 20) + register_address[rd] + J_encoding.J_oppcode
         out.append(final)
     
     # Branching
