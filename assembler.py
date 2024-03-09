@@ -109,7 +109,9 @@ while pc<lines:
     
     #J-Type Instruction
     elif operation in J_encoding.J_operations:
-        pass
+        rd, tempimm = inp[1].split(",")
+        final = tempimm + register_address[rd] + operation
+        out.append(final)
     
     # Branching
     
