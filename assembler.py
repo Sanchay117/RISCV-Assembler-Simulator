@@ -93,7 +93,9 @@ while pc<lines:
         rd,rs1,rs2=inp[1].split(",") # gives us rd,rs1,rs2 IN THAT ORDER
 
         final = R_encoding.R_funct7[operation] + register_address[rs2] + register_address[rs1] + R_encoding.R_funct3[operation] + register_address[rd] +R_encoding.R_oppcode
-    
+
+        out.append(final)
+
     # I-Type Instruction
     elif operation in I_encoding.I_operations:
         final = I_encoding.I_oppcode[operation]
@@ -110,7 +112,7 @@ while pc<lines:
     #J-Type Instruction
     elif operation in J_encoding.J_operations:
         rd, tempimm = inp[1].split(",")
-        final = tempimm + register_address[rd] + operation
+        final = tempimm + register_address[rd] + J_encoding.J_oppcode
         out.append(final)
     
     # Branching
@@ -154,6 +156,8 @@ while pc<lines:
             if(val1<val2):
                 pc+=branch
 
+        out.append(final)
+
     # S-Type Instruction
     elif operation in S_encoding.S_operations:
         
@@ -164,7 +168,9 @@ while pc<lines:
         imm = binary_to_specified_len(int(imm),12)      #converting immediate value to 12bit binary string
 
         final = imm[-12:-5] + register_address[rs2] + register_address[rs1] + S_encoding.S_funct3[operation] + imm[-5:] + S_encoding.S_oppcode
-    
+
+        out.append(final)
+
     # U-Type Instruction
     elif operation in U_encoding.U_operations:
 
@@ -174,7 +180,7 @@ while pc<lines:
 
         final = imm[-32:-12] + register_address[rd] + U_encoding.U_oppcode[operation]
 
-    out.append(final)
+        out.append(final)
 
     pc+=1 # Always keep this at the last of the loop!!!
     
