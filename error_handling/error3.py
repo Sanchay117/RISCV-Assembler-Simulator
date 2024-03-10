@@ -39,13 +39,16 @@ def main():
    if ":" not in j:
     l.append(j)
   # Check for errors and output error 
+  error_found = False
   for i, line in enumerate(l, 1):
     tokens = lines_strip(line)
     error, error_line = check_lines(tokens, i)
     if error:
       print(f"Error: {error} at line {error_line}")
-      return
-  print("No errors found.")
+      error_found = True
+      continue
+  if not error_found:
+    print("No errors found.")
 
 if __name__ == "__main__":
   main()
