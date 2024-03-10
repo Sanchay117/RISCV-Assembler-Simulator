@@ -123,8 +123,8 @@ while pc<lines:
         branch=int(imm)
         branch-=1
         # binary=bin(int(imm))
-        imm_12bit = binary_to_specified_len(int(imm),12)
-        final = imm_12bit[-12:-5] + register_address[rs2] + register_address[rs1] + B_encoding.B_funct3[operation] + imm_12bit[-5:] + B_encoding.B_oppcode
+        imm_12bit = binary_to_specified_len(int(imm),13)
+        final = imm_12bit[-13] + imm_12bit[-11] + imm[-10:-5] + register_address[rs2] + register_address[rs1] + B_encoding.B_funct3[operation] + imm_12bit[-5:] + B_encoding.B_oppcode
 
         val1,val2=registers[rs1].value,registers[rs2].value
 
