@@ -71,13 +71,24 @@ instructions=assembly.readlines()
 # Assuming Instructions are of the form "operation r1,r2,r3"
 # That is operation and operands seperated by space and operands themselves seperated by commas
 
-lines=len(instructions)
+lines=len(instructions)*4 # as Address starts at 0x00 and increment by 4. As, our processor is byte addressable and each instruction is of 32 bit.
+
+# labels
+labels={}
+
+for line in range(int(lines/4)):
+    instruction = instructions[line]
+    instruction = instruction.strip().split(" ")
+    if (instruction[0][-1]==":"):
+        labels[instruction[0][:-1]] = line*4
+        instructions[line]=" ".join(instruction[1:]) + "\n"
+
 
 pc=0 # program counter
 
 while pc<lines:
 
-    instruction = instructions[pc]
+    instruction = instructions[int(pc/4)]
 
     instruction=instruction.strip() # Removing /n and spaces(leading and trailing both) from each line
     # but what about last line you ask -> we shall worry about it later
@@ -120,41 +131,51 @@ while pc<lines:
     elif operation in B_encoding.B_operations:
         
         rs1,rs2,imm=inp[1].split(",")
-        branch=int(imm)
-        branch-=1
-        # binary=bin(int(imm))
-        imm_12bit = binary_to_specified_len(int(imm),13)
-        final = imm_12bit[-13] + imm_12bit[-11] + imm[-10:-5] + register_address[rs2] + register_address[rs1] + B_encoding.B_funct3[operation] + imm_12bit[-5:] + B_encoding.B_oppcode
 
-        val1,val2=registers[rs1].value,registers[rs2].value
+        if(imm.isnumeric()):
 
-        if(operation=="beq"):
-            if(val1==val2) :
-                pc+=branch
+            branch=int(imm)
+            branch-=1
+            # binary=bin(int(imm))
+            imm_12bit = binary_to_specified_len(int(imm),13)
+            final = imm_12bit[-13] + imm_12bit[-11] + imm[-10:-5] + register_address[rs2] + register_address[rs1] + B_encoding.B_funct3[operation] + imm_12bit[-5:] + B_encoding.B_oppcode
 
-        elif(operation=="bne"):
-            if(val1!=val2):
-                pc+=branch
+            val1,val2=registers[rs1].value,registers[rs2].value
 
-        elif(operation=="bge"):
-            # Remember to use signed comparison later
-            if(val1>=val2):
-                pc+=branch
+            if(operation=="beq"):
+                if(val1==val2) :
+                    pc+=branch
 
-        elif(operation=="bgeu"):
-            # Remember to use unsigned comparison later
-            if(val1>=val2):
-                pc+=branch
+            elif(operation=="bne"):
+                if(val1!=val2):
+                    pc+=branch
 
-        elif(operation=="blt"):
-            # Remember to use signed comparison later
-            if(val1<val2):
-                pc+=branch
-        
+            elif(operation=="bge"):
+                # Remember to use signed comparison later
+                if(val1>=val2):
+                    pc+=branch
+
+            elif(operation=="bgeu"):
+                # Remember to use unsigned comparison later
+                if(val1>=val2):
+                    pc+=branch
+
+            elif(operation=="blt"):
+                # Remember to use signed comparison later
+                if(val1<val2):
+                    pc+=branch
+            
+            else:
+                # Remember to use unsigned comparison later
+                if(val1<val2):
+                    pc+=branch
+            
         else:
-            # Remember to use unsigned comparison later
-            if(val1<val2):
-                pc+=branch
+            if(imm not in labels):
+                print("Error on line:",int(pc/4)+1,"->No such label")
+                break
+            else:
+                pass
 
         out.append(final)
 
@@ -182,7 +203,7 @@ while pc<lines:
 
         out.append(final)
 
-    pc+=1 # Always keep this at the last of the loop!!!
+    pc+=4 # Always keep this at the last of the loop!!!
     
 
 assembly.close()
