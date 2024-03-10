@@ -132,50 +132,49 @@ while pc<lines:
         
         rs1,rs2,imm=inp[1].split(",")
 
-        if(imm.isnumeric()):
+        if(imm.isnumeric() or imm in labels):
+            if (imm.isnumeric()):
+                offset=int(imm)*4
+                imm_13bit = binary_to_specified_len(int(imm),13)
+            else:
+                offset = labels[imm] - pc
+                imm_13bit=binary_to_specified_len(offset,13)
 
-            branch=int(imm)
-            branch-=1
-            # binary=bin(int(imm))
-            imm_12bit = binary_to_specified_len(int(imm),13)
-            final = imm_12bit[-13] + imm_12bit[-11] + imm[-10:-5] + register_address[rs2] + register_address[rs1] + B_encoding.B_funct3[operation] + imm_12bit[-5:] + B_encoding.B_oppcode
-
+            final = imm_13bit[-13] + imm_13bit[-11] + imm_13bit[-10:-5] + register_address[rs2] + register_address[rs1] + B_encoding.B_funct3[operation] + imm_13bit[-5:-1] + imm_13bit[-12] + B_encoding.B_oppcode
             val1,val2=registers[rs1].value,registers[rs2].value
 
             if(operation=="beq"):
                 if(val1==val2) :
-                    pc+=branch
+                    pc+=offset
 
             elif(operation=="bne"):
                 if(val1!=val2):
-                    pc+=branch
+                    pc+=offset
 
             elif(operation=="bge"):
                 # Remember to use signed comparison later
                 if(val1>=val2):
-                    pc+=branch
+                    pc+=offset
 
             elif(operation=="bgeu"):
                 # Remember to use unsigned comparison later
                 if(val1>=val2):
-                    pc+=branch
+                    pc+=offset
 
             elif(operation=="blt"):
                 # Remember to use signed comparison later
                 if(val1<val2):
-                    pc+=branch
+                    pc+=offset
             
             else:
                 # Remember to use unsigned comparison later
                 if(val1<val2):
-                    pc+=branch
+                    pc+=offset
             
         else:
             if(imm not in labels):
                 print("Error on line:",int(pc/4)+1,"->No such label")
                 break
-            else:
-                pass
 
         out.append(final)
 
