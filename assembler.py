@@ -26,29 +26,29 @@ def binary_to_specified_len(num,length):
             
     # Note: for negative numbers -> Their  binary representation are acheived by taking 2's complement of binary representation of abs(num) 
     #                            -> To do this we perform bitwise xor operation between A(binary representation of abs(num)) 
-    #                               and B(binary of max reprensentable value using "length" amount of bits{111...length times}) and then add 1 to result.
+    #                               and B(max representable value using "length" amount of bits {111...length times}) and then add 1 to result.
     #                            -> In python if we perform 10^5 ("^" sign for xor)then,by default bitwise xor is performed on binary 
-    #                               representation of 10 and 5 i.e.(1010 and 0101)
+    #                               representation of 10 and 5 i.e.(1010 and 0101) to give 1111.
                                  
-    # For example:1) num = 3
-    #              the built in func (bin) : bin(3) returns "0b11"
-    #              if length  = 5 we get string as "00011"
+    # For example:1)->num = 3 ,length = 5
+    #               ->The built in func (bin) : bin(3) returns "0b11"
+    #               ->If length  = 5 we get string as "00011"
 
-    #             2) num  = -10, length = 5
-    #              bin(10) = 1010
-    #              The expression[bin((abs(num)^((2**length)-1)) + 1)] = [bin(10^31)+1] = bin({01010^11111 in binary} +1) = "10110" 
+    #             2)->num  = -10, length = 5
+    #               ->bin(10) = 1010
+    #               ->The expression[bin((abs(num)^((2**length)-1)) + 1)] = [bin(10^31)+1] = [(01010^11111) +1] = "0b10110" 
     
 
 
-    if(num>=0):
-        bin_string = bin(num)   
-        bin_string = bin_string[2:]
-        bin_string = '0'*(length-len(bin_string)) + bin_string  #extended by adding 0 to leftmost side
+    if(num>=0):                                                 #eg:num = 5, length = 5
+        bin_string = bin(num)                                   # Converting 5 to '0b101'
+        bin_string = bin_string[2:]                             #Removing '0b'  to give '101'
+        bin_string = '0'*(length-len(bin_string)) + bin_string  #extended by adding 0 to leftmost side to give '00101'
 
-    elif(num<0):
-        bin_string = bin((abs(num)^((2**length)-1)) + 1)    # bitwise xor between a(abs(num)) and b(decimal value of binary number 1111....length times) followed by addition of 1
-        bin_string = bin_string[2:]                        
-        bin_string = '1'*(length-len(bin_string)) + bin_string    # extended by adding 1 to leftmost side
+    elif(num<0):                                                #eg: num = -5 , length = 5
+        bin_string = bin((abs(num)^((2**length)-1)) + 1)        #performing 2's complement bin(5^[2**5 - 1] + 1) -> bin(5^31 + 1) -> bin( )-> 11011
+        bin_string = bin_string[2:]                             
+        bin_string = '1'*(length-len(bin_string)) + bin_string  # extended by adding 1 to leftmost side
  
     return bin_string
 
@@ -181,9 +181,9 @@ while pc<lines:
     # S-Type Instruction
     elif operation in S_encoding.S_operations:
         
-        rs2,k = inp[1].split(',')    #splitting to get for example: rs2,k =  t1,20(t0)
+        rs2,k = inp[1].split(',')    #splitting to get for example: rs2, k =  t1, 20(t0)
         k = k.rstrip(')')               # k = 20(t0
-        imm,rs1 = k.split('(')      #imm,rs1 = 20,t0
+        imm,rs1 = k.split('(')      #imm, rs1 = 20, t0
 
         imm = binary_to_specified_len(int(imm),12)      #converting immediate value to 12bit binary string
 
@@ -194,9 +194,13 @@ while pc<lines:
     # U-Type Instruction
     elif operation in U_encoding.U_operations:
 
-        rd,imm = inp[1].split(',')      #splitting to get for example rd,imm = t0,20
+        rd,imm = inp[1].split(',')      #splitting to get for example rd, imm = t0, 20
 
-        imm = binary_to_specified_len(int(imm),32) #converting immediate value to 32 bits binary string
+        imm = binary_to_specified_len(int(imm),32) #Converting immediate value to 32 bits binary string
+    
+        val = registers[rd].value
+        # if (operation == "lui"):
+        #         registers[rd].val = 
 
         final = imm[-32:-12] + register_address[rd] + U_encoding.U_oppcode[operation]
 

@@ -1,7 +1,11 @@
-start: add s1,s2,s3
-jalr ra,a5,-07
-lw a5,20(s1)
-sw ra,32(sp)
-beq a4,a5,1
-auipc s2,-30
-end: jal ra,-1024
+add a0,t0,t1
+lw t2,100(sp)
+beq s0,s1,12
+lui a1,2048
+jal ra,-48
+sub s2,s3,s4
+sw t5,200(gp)
+sltiu s5,a2,10
+xor a3,t3,t4
+addi s6,s7,25
+beq zero,zero,0
