@@ -67,16 +67,19 @@ def check_registers(register):
       return f"incorrect register {r}"
 
 # Testing the function
-input_string = input("Enter the instruction: ")
-components = input_string.split(" ")
-operation, operands = components[0], [comp.strip() for comp in components[1:]]
-input_string = operands[0]
-# Split the string by comma to get individual register names
-register = input_string.split(",")
-if check_registers(register):
-  print(check_registers(register))
-else:
-  if check_instruction(operation, register):
-      print("Valid Instruction.")
-  else:
-      print("Invalid Instruction.")
+def main(lines):
+    components = lines.split(" ")
+    operation, operands = components[0], [comp.strip() for comp in components[1:]]
+    input_string = operands[0]
+    # Split the string by comma to get individual register names
+    register = input_string.split(",")
+    if check_registers(register):
+      print(check_registers(register))
+    else:
+      if check_instruction(operation, register):
+        print("Valid Instruction.")
+      else:
+        print("Invalid Instruction.")
+
+if __name__ == "__main__":
+  main(lines)
