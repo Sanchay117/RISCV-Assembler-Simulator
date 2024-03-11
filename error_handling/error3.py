@@ -49,4 +49,4 @@ def main(lines):
     print("No errors found.")
 
 if __name__ == "__main__":
-  main()
+  main(lines)
