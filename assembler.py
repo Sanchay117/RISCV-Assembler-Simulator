@@ -281,7 +281,11 @@ assembly.close()
 
 output = open(output_file,"w")
 
+line_counter = 0
 for x in out:
-    output.write(x+"\n")
-
+    if line_counter == no_of_lines:
+        output.write(x)
+    else:
+        line_counter+=1
+        output.write(x+"\n")
 output.close()
