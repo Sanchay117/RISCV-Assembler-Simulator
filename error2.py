@@ -38,8 +38,11 @@ def Check_valid_immediate(value, operation):
 # Testing the function
 def main2(lines):
   components = lines.split(" ")
-  operation, operands = components[0], [components[1:0].split(',')]
-  
+  # print(components)
+  # print(components[1:])
+  operation, operands = components[0], components[-1]
+  operands = operands.split(',')
+  # print(operands)
   if operation in I_encoding.I_operations:
         if operation == "lw":
             imm,other = operands[-1].split('(')
@@ -61,7 +64,5 @@ def main2(lines):
         return False
   return True
 
- if error2.main(instruction):
-        print("Error: Immediate out of range at line")
-        
+
   # Split the string by comma and indexing the last element to get the immediate valu

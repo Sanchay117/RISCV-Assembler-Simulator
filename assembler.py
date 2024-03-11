@@ -117,9 +117,12 @@ while pc<lines:
 
     # error1.main1(instruction)
     # error2.main2(instruction)
-    err4=error3.main4(instruction,int(pc/4)+1)
-    if(not err4) : 
+    if not error2.main2(instruction):
+        print("Error: Immediate out of range at line", pc/4)
         exit()
+    # err4=error3.main4(instruction,int(pc/4)+1)
+    # if(not err4) : 
+    #     exit()
     
     inp=instruction.split(" ")
     operation = inp[0]

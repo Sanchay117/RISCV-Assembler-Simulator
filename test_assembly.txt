@@ -1,5 +1,5 @@
 xor s0,s1,s2
-addi s3,s4,-50
+addi s3,s4,2048
 blt s5,s6,16
 auipc t0,-64
 jal t1,32
