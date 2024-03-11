@@ -6,7 +6,7 @@ from ..Encoding import U_encoding
 from ..Encoding import J_encoding
 
 def check_rd(rd):
-    if rd != zero:
+    if rd != "zero":
         return True
     else:
         return False
