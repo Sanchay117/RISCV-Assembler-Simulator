@@ -52,6 +52,16 @@ def binary_to_specified_len(num,length):
  
     return bin_string
 
+def signed_val(s):
+    # returns signed value of a binary string
+    if(s[0]==1):
+        return -1*int(s[1:],2)
+    else:
+        return int(s[1:],2)
+    
+def unsigned_val(s):
+    return int(s,2)
+
 
 # Initializing Registers with values set to 0
 
@@ -104,6 +114,56 @@ while pc<lines:
         rd,rs1,rs2=inp[1].split(",") # gives us rd,rs1,rs2 IN THAT ORDER
 
         final = R_encoding.R_funct7[operation] + register_address[rs2] + register_address[rs1] + R_encoding.R_funct3[operation] + register_address[rd] +R_encoding.R_oppcode
+
+        val1,val2=registers[rs1].value,registers[rs2].value
+        signed_val1,signed_val2=signed_val(val1),signed_val(val2)
+        unsigned_val1,unsigned_val2=unsigned_val(val1),unsigned_val(val2)
+
+        if operation=="add":
+            result = binary_to_specified_len(signed_val1+signed_val2,32)
+            registers[rd].set(result)
+        elif operation=="sub":
+            result = binary_to_specified_len(signed_val1-signed_val2,32)
+            registers[rd].set(result)
+        elif operation=="slt":
+            if(signed_val1<signed_val2):
+                registers[rd].set(binary_to_specified_len(1,32))
+        elif operation=="sltu":
+            if(unsigned_val1<unsigned_val2):
+                registers[rd].set(binary_to_specified_len(1,32))
+        elif operation=="xor":
+            result=""
+            for i in range(len(val1)):
+                if((val1[i]==1 or val2[i]==1) and not(val1==1 and val2==1)):
+                    result+="1"
+                else:
+                    result+="0"
+            registers[rd].set(result)
+        elif operation=="sll":
+            shift=unsigned_val(val2[-5:])
+            result=signed_val1<<shift
+            registers[rd].set(binary_to_specified_len(result,32))
+        elif operation=="srl":
+            shift=unsigned_val(val2[-5:])
+            result=signed_val1>>shift
+            registers[rd].set(binary_to_specified_len(result,32))
+        elif operation=="or":
+            result=""
+            for i in range(len(val1)):
+                if((val1[i]==1 or val2[i]==1)):
+                    result+="1"
+                else:
+                    result+="0"
+            registers[rd].set(result)
+        else:
+            result=""
+            for i in range(len(val1)):
+                if((val1[i]==1 and val2[i]==1)):
+                    result+="1"
+                else:
+                    result+="0"
+            registers[rd].set(result)
+            
 
         out.append(final)
 

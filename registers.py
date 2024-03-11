@@ -1,6 +1,5 @@
 class Register:
-    def __init__(self,
-    address,val=0b0):
+    def __init__(self,address,val="0"*32): # Register Can Store 32 bits
         self.address=address
         self.value=val
     def set(self,val):

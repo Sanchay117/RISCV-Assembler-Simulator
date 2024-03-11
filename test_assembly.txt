@@ -1,6 +1,6 @@
 add a0,t0,t1
 lw t2,100(sp)
-beq s0,s1,12
+beq s0,s1,0
 lui a1,2048
 jal ra,-48
 sub s2,s3,s4
