@@ -84,7 +84,11 @@ out=[]
 
 assembly = open(input_file,"r")
 instructions=assembly.readlines()
-
+temp_ins = []
+for x in instructions:
+    if x!="\n":
+        temp_ins.append(x)
+instructions = temp_ins
 
 # Assuming Instructions are of the form "operation r1,r2,r3"
 # That is operation and operands seperated by space and operands themselves seperated by commas
