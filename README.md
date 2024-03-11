@@ -1,7 +1,7 @@
 
 # CO Assembler
 
-We have created a RISC-V assembler which convert assembly code to binary code 
+We have created a RISC-V assembler which converts assembly code to binary code 
 
 
 
@@ -14,9 +14,11 @@ We have created a RISC-V assembler which convert assembly code to binary code
 - [@Pranav Prakash Kadam](https://github.com/pranavkadam27)
 
 ## Demo
-- Write your assembly code in test_assembly.txt
-- Run assembler.py
-- The machine code will be converted in test_out.txt
+- Clone the repo
+- Open the terminal in the repo directory
+- paste this command python3 assembler.py input.txt output.txt
+- make sure that input.txt contains assembly instructions
+- The binary output will created in output.txt
 
 
 ## Tech Stack
