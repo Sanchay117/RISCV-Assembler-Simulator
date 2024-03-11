@@ -99,6 +99,8 @@ for line in range(int(lines/4)):
         if (instruction[0][-1]==":"):
             labels[instruction[0][:-1]] = line*4
             instructions[line]=" ".join(instruction[1:]) + "\n"
+    else:
+        no_of_lines-=1
 
 
 pc=0 # program counter
