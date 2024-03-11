@@ -18,6 +18,8 @@ import sys
 import error as error1
 import error2 as error2
 import error4 as error3
+import testerror as testerror
+
 
 input_file,output_file = sys.argv[1],sys.argv[2]
 
@@ -83,10 +85,7 @@ out=[]
 assembly = open(input_file,"r")
 instructions=assembly.readlines()
 
-#no of lines and check if last line is halt instruction or not 
-no_of_lines = len(instructions) 
-flag_halt_not_found = False if instructions[-1] != "beq zero,zero,0" else True 
-# print(flag_halt_not_found)
+
 # Assuming Instructions are of the form "operation r1,r2,r3"
 # That is operation and operands seperated by space and operands themselves seperated by commas
 
@@ -95,6 +94,7 @@ lines=len(instructions)*4 # as Address starts at 0x00 and increment by 4. As, ou
 # labels
 labels={}
 
+no_of_lines = len(instructions) 
 for line in range(int(lines/4)):
     instruction = instructions[line]
     instruction = instruction.strip().split(" ")
@@ -105,12 +105,33 @@ for line in range(int(lines/4)):
     else:
         no_of_lines-=1
 
-
-pc=0 # program counter
-
+#no of lines and check if last line is halt instruction or not 
+flag_halt_not_found = False if instructions[-1].strip() != "beq zero,zero,0" else True 
+if(not flag_halt_not_found):
+    # print(instructions[-1].strip())
+    print("Virtual Halt Missing")
+    exit()
+# print(flag_halt_not_found)
 # if(instructions[-1]!="beq zero,zero,0"):
 #     print("Virtual Halt Missing on line")
 #     exit()
+
+
+#to check if any error in any line
+error_happened = False
+for x in range(len(instructions)):
+    bool_result, type_error = testerror.mainchecker(instructions[x].strip())
+    if(bool_result==False):
+        print(f"{type_error} error in line {x+1}")
+        error_happened = True
+        print(instructions[x].strip())
+        break
+if error_happened:
+    exit()
+pc=0 # program counter
+
+
+
 
 while pc<lines:
 

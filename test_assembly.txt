@@ -1,5 +1,5 @@
 start: lui t0,100
-    addi t1,t0,-50
+    addi t1,t0,-10
     bge t1,zero,end
     bltu t2,t1,start
     addi t2,t1,20
