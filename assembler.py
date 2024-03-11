@@ -95,9 +95,10 @@ labels={}
 for line in range(int(lines/4)):
     instruction = instructions[line]
     instruction = instruction.strip().split(" ")
-    if (instruction[0][-1]==":"):
-        labels[instruction[0][:-1]] = line*4
-        instructions[line]=" ".join(instruction[1:]) + "\n"
+    if(instruction[0]!=""):
+        if (instruction[0][-1]==":"):
+            labels[instruction[0][:-1]] = line*4
+            instructions[line]=" ".join(instruction[1:]) + "\n"
 
 
 pc=0 # program counter
