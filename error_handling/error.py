@@ -75,7 +75,7 @@ input_string = operands[0]
 register = input_string.split(",")
 register = input_string.split(",")
 if check_registers(register):
-  print("Incorrect register")
+  print(check_registers(register))
 else:
   if check_instruction(operation, register):
       print("Valid Instruction.")
