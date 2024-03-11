@@ -1,24 +1,21 @@
 from Encoding import R_encoding
 from Encoding import I_encoding
 from Encoding import S_encoding
-from Encoding import B_encoding
 from Encoding import U_encoding
 from Encoding import J_encoding
 
-def check_rd(rd):
-    if rd != "zero":
-        return True
-    else:
+def check_zero(rd,line):
+    if(rd=="zero"):
+        print("Error On Line",line,": Value Is Being Written On x0 or the zero register which doesn't support any writes")    
         return False
-
-def main4(lines):
-    components = lines.split(" ")
-    operation, operands = components[0], [comp.strip() for comp in components[1:]]
-    input_string = operands[0]
-    # Split the string by comma to get individual register names
-    register = input_string.split(",")
-    rd = register[0]
-    if check_rd(rd):
-        print("Valid instruction")
     else:
-        print("Invalid instruction")
+        return True
+
+def main4(instruction,line):
+    instruction=instruction.split(" ")
+    operation = instruction[0]
+    if (operation in R_encoding.R_operations) or (operation in I_encoding.I_operations) or (operation in U_encoding.U_operations) or (operation in J_encoding.J_operations):
+        rd=instruction[1].split(",")[0]
+        if(not check_zero(rd,line)):
+            return False
+    return True

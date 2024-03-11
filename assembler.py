@@ -17,6 +17,7 @@ import Encoding.J_encoding as J_encoding
 import sys
 import error as error1
 import error2 as error2
+import error4 as error3
 
 input_file,output_file = sys.argv[1],sys.argv[2]
 
@@ -111,10 +112,14 @@ while pc<lines:
 
     instruction = instructions[int(pc/4)]
 
-    error1.main1(instruction)
-    error2.main2(instruction)
     instruction=instruction.strip() # Removing /n and spaces(leading and trailing both) from each line
     # but what about last line you ask -> we shall worry about it later
+
+    # error1.main1(instruction)
+    # error2.main2(instruction)
+    err4=error3.main4(instruction,int(pc/4)+1)
+    if(not err4) : 
+        exit()
     
     inp=instruction.split(" ")
     operation = inp[0]
