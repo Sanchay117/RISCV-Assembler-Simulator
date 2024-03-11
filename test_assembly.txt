@@ -5,6 +5,7 @@ auipc t0,-64
 jal t1,32
 srl t2,t3,t4
 sw t5,-20(s0)
+add zero,s0,s2
 sltiu t6,a0,5
 sub t1,t3,tp
 lw s0,48(gp)
