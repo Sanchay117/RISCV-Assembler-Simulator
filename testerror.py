@@ -94,7 +94,7 @@ def mainchecker(line:str):
                 return False
             if int(num) >= -1 * 2**11 and int(num) <= (2**11-1):
                 return True
-            return False;
+            return False
         elif opcode in U_encoding.U_operations:
             rd, num = other.split(",")
             if(not check_register(rd)):
