@@ -55,15 +55,15 @@ def binary_to_specified_len(num,length):
  
     return bin_string
 
-# def signed_val(s):
-#     # returns signed value of a binary string
-#     if(s[0]==1):
-#         return -1*int(s[1:],2)
-#     else:
-#         return int(s[1:],2)
+def signed_val(s):
+    # returns signed value of a binary string
+    if(s[0]==1):
+        return -1*int(s[1:],2)
+    else:
+        return int(s[1:],2)
     
-# def unsigned_val(s):
-#     return int(s,2)
+def unsigned_val(s):
+    return int(s,2)
 
 
 # Initializing Registers with values set to 0
@@ -78,9 +78,12 @@ for key in register_address:
 out=[]
 
 assembly = open(input_file,"r")
-
 instructions=assembly.readlines()
 
+#no of lines and check if last line is halt instruction or not 
+no_of_lines = len(instructions) 
+flag_halt_not_found = False if instructions[-1] != "beq zero,zero,0" else True 
+# print(flag_halt_not_found)
 # Assuming Instructions are of the form "operation r1,r2,r3"
 # That is operation and operands seperated by space and operands themselves seperated by commas
 
@@ -118,54 +121,54 @@ while pc<lines:
 
         final = R_encoding.R_funct7[operation] + register_address[rs2] + register_address[rs1] + R_encoding.R_funct3[operation] + register_address[rd] +R_encoding.R_oppcode
 
-        # val1,val2=registers[rs1].value,registers[rs2].value
-        # signed_val1,signed_val2=signed_val(val1),signed_val(val2)
-        # unsigned_val1,unsigned_val2=unsigned_val(val1),unsigned_val(val2)
+        val1,val2=registers[rs1].value,registers[rs2].value
+        signed_val1,signed_val2=signed_val(val1),signed_val(val2)
+        unsigned_val1,unsigned_val2=unsigned_val(val1),unsigned_val(val2)
 
-        # if operation=="add":
-        #     result = binary_to_specified_len(signed_val1+signed_val2,32)
-        #     registers[rd].set(result)
-        # elif operation=="sub":
-        #     result = binary_to_specified_len(signed_val1-signed_val2,32)
-        #     registers[rd].set(result)
-        # elif operation=="slt":
-        #     if(signed_val1<signed_val2):
-        #         registers[rd].set(binary_to_specified_len(1,32))
-        # elif operation=="sltu":
-        #     if(unsigned_val1<unsigned_val2):
-        #         registers[rd].set(binary_to_specified_len(1,32))
-        # elif operation=="xor":
-        #     result=""
-        #     for i in range(len(val1)):
-        #         if((val1[i]==1 or val2[i]==1) and not(val1==1 and val2==1)):
-        #             result+="1"
-        #         else:
-        #             result+="0"
-        #     registers[rd].set(result)
-        # elif operation=="sll":
-        #     shift=unsigned_val(val2[-5:])
-        #     result=signed_val1<<shift
-        #     registers[rd].set(binary_to_specified_len(result,32))
-        # elif operation=="srl":
-        #     shift=unsigned_val(val2[-5:])
-        #     result=signed_val1>>shift
-        #     registers[rd].set(binary_to_specified_len(result,32))
-        # elif operation=="or":
-        #     result=""
-        #     for i in range(len(val1)):
-        #         if((val1[i]==1 or val2[i]==1)):
-        #             result+="1"
-        #         else:
-        #             result+="0"
-        #     registers[rd].set(result)
-        # else:
-        #     result=""
-        #     for i in range(len(val1)):
-        #         if((val1[i]==1 and val2[i]==1)):
-        #             result+="1"
-        #         else:
-        #             result+="0"
-        #     registers[rd].set(result)
+        if operation=="add":
+            result = binary_to_specified_len(signed_val1+signed_val2,32)
+            registers[rd].set(result)
+        elif operation=="sub":
+            result = binary_to_specified_len(signed_val1-signed_val2,32)
+            registers[rd].set(result)
+        elif operation=="slt":
+            if(signed_val1<signed_val2):
+                registers[rd].set(binary_to_specified_len(1,32))
+        elif operation=="sltu":
+            if(unsigned_val1<unsigned_val2):
+                registers[rd].set(binary_to_specified_len(1,32))
+        elif operation=="xor":
+            result=""
+            for i in range(len(val1)):
+                if((val1[i]==1 or val2[i]==1) and not(val1==1 and val2==1)):
+                    result+="1"
+                else:
+                    result+="0"
+            registers[rd].set(result)
+        elif operation=="sll":
+            shift=unsigned_val(val2[-5:])
+            result=signed_val1<<shift
+            registers[rd].set(binary_to_specified_len(result,32))
+        elif operation=="srl":
+            shift=unsigned_val(val2[-5:])
+            result=signed_val1>>shift
+            registers[rd].set(binary_to_specified_len(result,32))
+        elif operation=="or":
+            result=""
+            for i in range(len(val1)):
+                if((val1[i]==1 or val2[i]==1)):
+                    result+="1"
+                else:
+                    result+="0"
+            registers[rd].set(result)
+        else:
+            result=""
+            for i in range(len(val1)):
+                if((val1[i]==1 and val2[i]==1)):
+                    result+="1"
+                else:
+                    result+="0"
+            registers[rd].set(result)
             
 
         out.append(final)
@@ -204,35 +207,35 @@ while pc<lines:
                 imm_13bit=binary_to_specified_len(offset,13)
 
             final = imm_13bit[-13] + imm_13bit[-11] + imm_13bit[-10:-5] + register_address[rs2] + register_address[rs1] + B_encoding.B_funct3[operation] + imm_13bit[-5:-1] + imm_13bit[-12] + B_encoding.B_oppcode
-            # val1,val2=registers[rs1].value,registers[rs2].value
+            val1,val2=registers[rs1].value,registers[rs2].value
 
-            # if(operation=="beq"):
-            #     if(val1==val2) :
-            #         pc+=offset
+            if(operation=="beq"):
+                if(val1==val2) :
+                    pc+=offset
 
-            # elif(operation=="bne"):
-            #     if(val1!=val2):
-            #         pc+=offset
+            elif(operation=="bne"):
+                if(val1!=val2):
+                    pc+=offset
 
-            # elif(operation=="bge"):
-            #     # Remember to use signed comparison later
-            #     if(val1>=val2):
-            #         pc+=offset
+            elif(operation=="bge"):
+                # Remember to use signed comparison later
+                if(val1>=val2):
+                    pc+=offset
 
-            # elif(operation=="bgeu"):
-            #     # Remember to use unsigned comparison later
-            #     if(val1>=val2):
-            #         pc+=offset
+            elif(operation=="bgeu"):
+                # Remember to use unsigned comparison later
+                if(val1>=val2):
+                    pc+=offset
 
-            # elif(operation=="blt"):
-            #     # Remember to use signed comparison later
-            #     if(val1<val2):
-            #         pc+=offset
+            elif(operation=="blt"):
+                # Remember to use signed comparison later
+                if(val1<val2):
+                    pc+=offset
             
-            # else:
-            #     # Remember to use unsigned comparison later
-            #     if(val1<val2):
-            #         pc+=offset
+            else:
+                # Remember to use unsigned comparison later
+                if(val1<val2):
+                    pc+=offset
             
         else:
             if(imm not in labels):
