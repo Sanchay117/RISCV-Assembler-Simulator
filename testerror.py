@@ -112,5 +112,8 @@ def mainchecker(line:str):
     else:
         return False
 
-print(mainchecker("lw s1,400(s3)"))
-
+a = open("test_assembly.txt", "r")
+t = a.readlines()
+for x in t:
+    print(x, end=" ")
+    print(mainchecker(x))

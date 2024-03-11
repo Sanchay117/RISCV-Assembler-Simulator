@@ -108,6 +108,10 @@ for line in range(int(lines/4)):
 
 pc=0 # program counter
 
+if(instructions[-1]!="beq zero,zero,0"):
+    print("Virtual Halt Missing on line")
+    exit()
+
 while pc<lines:
 
     instruction = instructions[int(pc/4)]
