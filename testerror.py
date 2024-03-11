@@ -56,64 +56,64 @@ def mainchecker(line:str):
         if opcode in R_encoding.R_operations:
             rd, rs1, rs2 = other.split(",")
             if check_register(rd) and check_register(rs1) and check_register(rs2):
-                 return True
+                 return True, "register-not-found"
             else:
-                return False
+                return False, "typo"
         elif opcode in I_encoding.I_operations:
             if opcode == "lw": #lw s0,48(gp) error 
                 rd,oth = other.split(",")
                 if(not check_register(rd)):
-                    return False
+                    return False, "register-not-found"
                 num, rd = oth.split("(")
                 rd=rd.rstrip(")")
                 if(not check_register(rd)):
-                    return False
+                    return False, "register-not-found"
                 if int(num) >= -1 * 2**11 and int(num) <= (2**11-1):
-                    return True
-                return False
+                    return True, "ok"
+                return False, "typo"
             else:
                 rd,rs,num = other.split(",")
                 if(not check_register(rd) or not check_register(rs)):
-                    return False
+                    return False, "register-not-found"
                 if int(num) >= -1 * 2**11 and int(num) <= (2**11-1):
-                    return True
-                return False
+                    return True, "ok"
+                return False, "typo"
         else: #for b enconding
             rs1, rs2, num = other.split(",") 
             if(not check_register(rs1) or not check_register(rs2)):
-                return False
+                return False, "register-not-found"
             if int(num) >= -1 * 2**12 and int(num) <= (2**12-1):
-                return True
-            return False
+                return True, "ok"
+            return False, "typo"
     elif opcode in S_encoding.S_operations or opcode in U_encoding.U_operations or opcode in J_encoding.J_operations:
         if opcode in S_encoding.S_operations:
             rs2, other = other.split(",")
             num, rs1 = other.split("(")
             rs1 = rs1.rstrip(")")
             if(not check_register(rs1) or not check_register(rs2)):
-                return False
+                return False, "register-not-found"
             if int(num) >= -1 * 2**11 and int(num) <= (2**11-1):
-                return True
-            return False
+                return True, "ok"
+            return False, "typo"
         elif opcode in U_encoding.U_operations:
             rd, num = other.split(",")
             if(not check_register(rd)):
-                return False
+                return False, "register-not-found"
             if int(num) >= -2147483648 and int(num) <= (2147483647):
-                return True
-            return False
+                return True, "ok"
+            return False, "typo"
         else: #for j encoding
             rd, num = other.split(",")
             if(not check_register(rd)):
-                return False
+                return False, "register-not-found"
             if int(num) >= -1048576 and int(num) <= (1048575):
-                return True
-            return False
+                return True, "ok"
+            return False, "typo"
     else:
-        return False
+        return False, "opcode-not-found"
 
-a = open("test_assembly.txt", "r")
+a = open("test_assembly.txt","r")
 t = a.readlines()
 for x in t:
-    print(x, end=" ")
+    print(x,end=" ")
     print(mainchecker(x))
