@@ -59,9 +59,11 @@ def main2(lines):
          return False
   
   elif operation in B_encoding.B_operations or operation in U_encoding.U_operations or operation in J_encoding.J_operations:
-     imm = operands[-1]
-     if not Check_valid_immediate(int(imm),operation):
-        return False
+     
+      imm = operands[-1]
+      if imm.isnumeric():
+        if not Check_valid_immediate(int(imm),operation):
+          return False
   return True
 
 
