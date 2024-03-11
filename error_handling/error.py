@@ -73,7 +73,6 @@ operation, operands = components[0], [comp.strip() for comp in components[1:]]
 input_string = operands[0]
 # Split the string by comma to get individual register names
 register = input_string.split(",")
-register = input_string.split(",")
 if check_registers(register):
   print(check_registers(register))
 else:
