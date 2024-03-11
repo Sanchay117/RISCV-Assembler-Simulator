@@ -38,13 +38,30 @@ def Check_valid_immediate(value, operation):
 # Testing the function
 def main2(lines):
   components = lines.split(" ")
-  operation, operands = components[0], [comp.strip() for comp in components[1:]]
-  input_string = operands[0]
-  # Split the string by comma and indexing the last element to get the immediate value
-  imm = (input_string.split(","))[-1]
-  # in case of ex- lw a5,20(s1)
-  immediate = (imm.split("("))[0]
-  if Check_valid_immediate(int(immediate), operation):
-    print("The immediate value is valid")
-  else:
-    print("The immediate value is invalid")
+  operation, operands = components[0], [components[1:0].split(',')]
+  
+  if operation in I_encoding.I_operations:
+        if operation == "lw":
+            imm,other = operands[-1].split('(')
+            if not Check_valid_immediate(int(imm), operation):
+               return False
+            
+        else:
+            imm = operands[-1] #gives us rd, rs1 and imm/offset
+            if not Check_valid_immediate(int(imm), operation):
+               return False
+  elif operation in S_encoding.S_operations:
+      imm,other = operands[-1].split('(')   #splitting to get for example: rs2, k =  t1, 20(t0)
+      if not Check_valid_immediate(int(imm),operation):
+         return False
+  
+  elif operation in B_encoding.B_operations or operation in U_encoding.U_operations or operation in J_encoding.J_operations:
+     imm = operands[-1]
+     if not Check_valid_immediate(int(imm),operation):
+        return False
+  return True
+
+ if error2.main(instruction):
+        print("Error: Immediate out of range at line")
+        
+  # Split the string by comma and indexing the last element to get the immediate valu
