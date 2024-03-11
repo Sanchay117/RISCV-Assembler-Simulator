@@ -28,10 +28,8 @@ def check_lines(tokens, line_number):
     return f"Incomplete operands for '{tokens[0]}'", line_number
   return None, None
 
-def main():
-  with open("test_assembly.txt", "r") as file:
-    lines = file.readlines()
-    l = []
+def main(lines):
+  l = []
   for j in lines:
    if ":" in j:
     line_split = j.split(":")[1]
