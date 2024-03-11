@@ -14,6 +14,9 @@ import Encoding.S_encoding as S_encoding
 import Encoding.B_encoding as B_encoding
 import Encoding.U_encoding as U_encoding
 import Encoding.J_encoding as J_encoding
+import sys
+
+input_file,output_file = sys.argv[1],sys.argv[2]
 
 from registers import Register,register_address
 
@@ -74,7 +77,7 @@ for key in register_address:
 
 out=[]
 
-assembly = open("test_assembly.txt","r")
+assembly = open(input_file,"r")
 
 instructions=assembly.readlines()
 
@@ -273,7 +276,7 @@ assembly.close()
 
 # Outputting to a txt file for now....
 
-output = open("test_out.txt","w")
+output = open(output_file,"w")
 
 for x in out:
     output.write(x+"\n")
