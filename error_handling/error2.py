@@ -30,19 +30,24 @@ def Check_valid_immediate(value, operation):
       return True
 
   return False
+  
 #
 # we need to convert label to immediate
 #_______________________________________#
+
 # Testing the function
-input_string = input("Enter the instruction: ")
-components = input_string.split(" ")
-operation, operands = components[0], [comp.strip() for comp in components[1:]]
-input_string = operands[0]
-# Split the string by comma and indexing the last element to get the immediate value
-imm = (input_string.split(","))[-1]
-# in case of ex- lw a5,20(s1)
-immediate = (imm.split("("))[0]
-if Check_valid_immediate(int(immediate), operation):
-  print("The immediate value is valid")
-else:
-  print("The immediate value is invalid")
+def main(lines):
+  components = lines.split(" ")
+  operation, operands = components[0], [comp.strip() for comp in components[1:]]
+  input_string = operands[0]
+  # Split the string by comma and indexing the last element to get the immediate value
+  imm = (input_string.split(","))[-1]
+  # in case of ex- lw a5,20(s1)
+  immediate = (imm.split("("))[0]
+  if Check_valid_immediate(int(immediate), operation):
+    print("The immediate value is valid")
+  else:
+    print("The immediate value is invalid")
+
+if __name__ == "__main__":
+  main()
