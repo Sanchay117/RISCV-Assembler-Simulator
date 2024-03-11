@@ -50,4 +50,4 @@ def main(lines):
     print("The immediate value is invalid")
 
 if __name__ == "__main__":
-  main()
+  main(lines)
