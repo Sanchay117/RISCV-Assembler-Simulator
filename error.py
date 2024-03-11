@@ -1,9 +1,9 @@
-from ..Encoding import R_encoding
-from ..Encoding import I_encoding
-from ..Encoding import S_encoding
-from ..Encoding import B_encoding
-from ..Encoding import U_encoding
-from ..Encoding import J_encoding
+from Encoding import R_encoding
+from Encoding import I_encoding
+from Encoding import S_encoding
+from Encoding import B_encoding
+from Encoding import U_encoding
+from Encoding import J_encoding
 
 # Now To Access Operations you can use R_encoding.R_operations
 # what you have done is still ok but reduces the modularity of the code
@@ -76,8 +76,10 @@ def main1(lines):
     if check_registers(register):
       print(check_registers(register))
     else:
-      if check_instruction(operation, register):
-        print("Valid Instruction.")
-      else:
-        print("Invalid Instruction.")
+      # if not check_instruction(operation, register):
+      #   print("Valid Instruction.")
+      # else:
+      #   print("Invalid Instruction.")
+      if not check_instruction(operation, register):
+         print("Invalid Instruction")
 

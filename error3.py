@@ -1,9 +1,9 @@
-from ..Encoding import R_encoding
-from ..Encoding import I_encoding
-from ..Encoding import S_encoding
-from ..Encoding import B_encoding
-from ..Encoding import U_encoding
-from ..Encoding import J_encoding
+from Encoding import R_encoding
+from Encoding import I_encoding
+from Encoding import S_encoding
+from Encoding import B_encoding
+from Encoding import U_encoding
+from Encoding import J_encoding
 
 def lines_strip(line):
   return line.strip().split()

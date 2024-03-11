@@ -15,6 +15,8 @@ import Encoding.B_encoding as B_encoding
 import Encoding.U_encoding as U_encoding
 import Encoding.J_encoding as J_encoding
 import sys
+import error as error1
+import error2 as error2
 
 input_file,output_file = sys.argv[1],sys.argv[2]
 
@@ -109,6 +111,8 @@ while pc<lines:
 
     instruction = instructions[int(pc/4)]
 
+    error1.main1(instruction)
+    error2.main2(instruction)
     instruction=instruction.strip() # Removing /n and spaces(leading and trailing both) from each line
     # but what about last line you ask -> we shall worry about it later
     
