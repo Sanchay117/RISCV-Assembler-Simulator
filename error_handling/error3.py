@@ -28,7 +28,7 @@ def check_lines(tokens, line_number):
     return f"Incomplete operands for '{tokens[0]}'", line_number
   return None, None
 
-def main(lines):
+def main3(lines):
   l = []
   for j in lines:
    if ":" in j:
@@ -48,5 +48,3 @@ def main(lines):
   if not error_found:
     print("No errors found.")
 
-if __name__ == "__main__":
-  main(lines)

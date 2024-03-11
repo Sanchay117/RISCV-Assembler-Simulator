@@ -67,7 +67,7 @@ def check_registers(register):
       return f"incorrect register {r}"
 
 # Testing the function
-def main(lines):
+def main1(lines):
     components = lines.split(" ")
     operation, operands = components[0], [comp.strip() for comp in components[1:]]
     input_string = operands[0]
@@ -81,5 +81,3 @@ def main(lines):
       else:
         print("Invalid Instruction.")
 
-if __name__ == "__main__":
-  main(lines)

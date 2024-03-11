@@ -36,7 +36,7 @@ def Check_valid_immediate(value, operation):
 #_______________________________________#
 
 # Testing the function
-def main(lines):
+def main2(lines):
   components = lines.split(" ")
   operation, operands = components[0], [comp.strip() for comp in components[1:]]
   input_string = operands[0]
@@ -48,6 +48,3 @@ def main(lines):
     print("The immediate value is valid")
   else:
     print("The immediate value is invalid")
-
-if __name__ == "__main__":
-  main(lines)
