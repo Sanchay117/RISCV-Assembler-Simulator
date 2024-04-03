@@ -108,7 +108,8 @@ for line in range(int(lines/4)):
             instructions[line]=" ".join(instruction[1:]) + "\n"
     else:
         no_of_lines-=1
-
+for x in instructions:
+    print(x)
 #no of lines and check if last line is halt instruction or not 
 flag_halt_not_found = False if instructions[-1].strip() != "beq zero,zero,0" else True 
 if(not flag_halt_not_found):
