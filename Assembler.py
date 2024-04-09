@@ -244,7 +244,7 @@ while pc<lines:
         
         rs1,rs2,imm=inp[1].split(",")
 
-        if(imm.isnumeric() or imm in labels):
+        if(imm.isnumeric() or (imm[0]=="-" and imm[1:].isnumeric()) or imm in labels):
             if (imm.isnumeric()):
                 offset=int(imm)*4
                 imm_13bit = binary_to_specified_len(int(imm),13)
