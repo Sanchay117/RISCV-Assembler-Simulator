@@ -106,6 +106,8 @@ def mainchecker(line:str):
             return True, "ok"
         else: #for j encoding
             rd, num = other.split(",")
+            if num.isalpha():
+                return True, "ok"
             if(not check_register(rd)):
                 return False, "register-not-found"
             if int(num) < -1048576 or int(num) > (1048575):
