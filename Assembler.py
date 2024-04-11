@@ -108,8 +108,7 @@ for line in range(int(lines/4)):
             instructions[line]=" ".join(instruction[1:]) + "\n"
     else:
         no_of_lines-=1
-for x in instructions:
-    print(x)
+
 #no of lines and check if last line is halt instruction or not 
 flag_halt_not_found = False if instructions[-1].strip() != "beq zero,zero,0" else True 
 if(not flag_halt_not_found):
@@ -235,8 +234,11 @@ while pc<lines:
     #J-Type Instruction
     elif operation in J_encoding.J_operations:
         rd, tempimm = inp[1].split(",")
-        imm = binary_to_specified_len(int(tempimm), 21)
-        final =  imm[-21] + imm[-11:-1] + imm[-12] + imm[-20:-12]+ register_address[rd] + J_encoding.J_oppcode
+        if tempimm.isnumeric() or (tempimm[0]=="-" and tempimm[1:].isnumeric()):
+            imm = binary_to_specified_len(int(tempimm), 21)
+        else:
+            imm = binary_to_specified_len(labels[tempimm]-pc, 21)
+        final = imm[-21] + imm[-11:-1] + imm[-12] + imm[-20:-12] + register_address[rd] + J_encoding.J_oppcode
         out.append(final)
     # Branching
     
@@ -245,7 +247,7 @@ while pc<lines:
         rs1,rs2,imm=inp[1].split(",")
 
         if(imm.isnumeric() or (imm[0]=="-" and imm[1:].isnumeric()) or imm in labels):
-            if (imm.isnumeric()):
+            if (imm.isnumeric() or (imm[0]=="-" and imm[1:].isnumeric())):
                 offset=int(imm)*4
                 imm_13bit = binary_to_specified_len(int(imm),13)
             else:

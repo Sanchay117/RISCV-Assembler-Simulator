@@ -84,8 +84,9 @@ def mainchecker(line:str):
                 return False, "register-not-found"
             if num.isalpha():
                 return True, "ok"
-            if int(num) < -1 * 2**12 or int(num) > (2**12-1):
-                return False, "out-of-bound"
+            if num.isnumeric() or (num[0]=='-' and num[1:].isnumeric()):
+                if int(num) < -1 * 2**12 or int(num) > (2**12-1):
+                    return False, "out-of-bound"
             return True, "ok"
     elif opcode in S_encoding.S_operations or opcode in U_encoding.U_operations or opcode in J_encoding.J_operations:
         if opcode in S_encoding.S_operations:
@@ -106,10 +107,12 @@ def mainchecker(line:str):
             return True, "ok"
         else: #for j encoding
             rd, num = other.split(",")
-            if(not check_register(rd)):
+            if not check_register(rd):
                 return False, "register-not-found"
-            if int(num) < -1048576 or int(num) > (1048575):
-                return False, "out-of-bound"
+            if num.isnumeric() or (num[0]=="-1" and num[1:].isnumeric()):
+                if int(num) < -1048576 or int(num) > (1048575):
+                    return False, "out-of-bound"
+
             return True, "ok"
     else:
         return False, "opcode-not-found"
