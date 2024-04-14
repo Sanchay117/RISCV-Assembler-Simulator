@@ -68,7 +68,10 @@ inp=open(input_file,'r')
 lines=inp.readlines()
 inp.close()
 
-for line in lines:
+pc = 0 # programm counter
+
+while pc < len(lines)*4:
+    line=lines[int(pc/4)]
     oppcode=line[-7:]
 
     if oppcode == R_encoding.R_oppcode:
@@ -137,8 +140,6 @@ for line in lines:
                     c+='0'
             registers[rd].value=c
 
-
-
     if oppcode in I_encoding.I_oppcode.values():
         # to be done by ramneek
         pass
@@ -149,7 +150,35 @@ for line in lines:
 
     if oppcode == B_encoding.B_oppcode:
         # to be done by sanchay
-        pass
+        imm=line[0] + line[-8] + line[-31:-25] + line[-12:-8]
+        funct3=line[-15:-12]
+        rs2=line[-25:-20]
+        rs1=line[-20:-15]
+        rs2_val=two_comp_to_base_10(rs2)
+        rs1_val=two_comp_to_base_10(rs1)
+        rs1_unsigned=int(rs1_val,2)
+        rs2_unsigned=int(rs2_val,2)
+
+        if funct3 == B_encoding.B_funct3["beq"]:
+            if(rs1_val==rs2_val):
+                pc+=1
+        if funct3 == B_encoding.B_funct3["bne"]:
+            if(rs1_val!=rs2_val):
+                pc+=1
+        if funct3 == B_encoding.B_funct3["bge"]:
+            if(rs1_val>=rs2_val):
+                pc+=1
+        if funct3 == B_encoding.B_funct3["bgeu"]:
+            if(rs1_unsigned>=rs2_unsigned):
+                pc+=1
+        if funct3 == B_encoding.B_funct3["blt"]:
+            if(rs1_val<rs2_val):
+                pc+=1
+        if funct3 == B_encoding.B_funct3["bltu"]:
+            if(rs1_unsigned<rs2_unsigned):
+                pc+=1
+        # what if pc increase lets say currently we at 0 but a B instruction causes it to get 8
+        # so now do we straight away goto 8 or do we go to 12 because pc+=4 after every iteration?
 
     if oppcode in U_encoding.U_oppcode.values():
         # to be done by pranav
@@ -158,3 +187,5 @@ for line in lines:
     if oppcode == J_encoding.J_oppcode:
         # to be done by nischay
         pass
+
+    pc+=4
