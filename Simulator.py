@@ -5,6 +5,56 @@ import Encoding.B_encoding as B_encoding
 import Encoding.U_encoding as U_encoding
 import Encoding.J_encoding as J_encoding
 import sys
+from Assembler import binary_to_specified_len
+
+def twos_complement(x):
+    '''
+    Returns the 2's complement of `x`'
+    :param x:
+    :return: y
+    '''
+    y=''
+    ind = 0
+    for i in range(len(x)-1, -1, -1):
+        if x[i] == '1':
+            ind = i
+    for i in range(ind):
+        if x[i] == '1':
+            y+="0"
+        else:
+            y+="1"
+    y+=x[ind:]
+    return y
+
+def two_complement_addition(a, b):
+    # assumes both operands are of same length
+    x=len(a)
+    result=''
+    carry=0
+    for i in range(x-1,-1,-1):
+        res = carry
+        res += 1 if a[i] == '1' else 0
+        res += 1 if b[i] == '1' else 0
+        result = ('1' if res % 2 == 1 else '0') + result
+        carry = 0 if res < 2 else 1
+    return result
+
+def two_complement_subtraction(a, b):
+    '''
+    Returns the 2's complement of `x`'
+    :param a:
+    :param b:
+    :return:
+    '''
+    # performing a + (-b)
+    two_complement_of_b=twos_complement( b) # this is -b
+    return two_complement_addition(a,two_complement_of_b)
+
+def two_comp_to_base_10(x):
+    if x[0]=='1': # Negative Number
+        return -1*int(twos_complement(x),2)
+    else:
+        return int(x,2)
 
 input_file,output_file = sys.argv[1],sys.argv[2]
 
@@ -24,7 +74,70 @@ for line in lines:
     if oppcode == R_encoding.R_oppcode:
         # to be done by sanchay
 
-        funct7,funct3 = line[0:8],line[17:20]
+        funct7,funct3 = line[0:7],line[17:20]
+
+        rs2,rs1,rd=line[7:12],line[12:17],line[20:25]
+
+        a=registers[rs1].value
+        b=registers[rs2].value
+
+        a_value=two_comp_to_base_10(a)
+        b_value=two_comp_to_base_10(b)
+
+        a_unsigned=int(a,2)
+        b_unsigned=int(b,2)
+
+
+        if funct7 == R_encoding.R_funct7["add"] and funct3 == R_encoding.R_funct3["add"]:
+            # think abt overflow....
+            c=two_complement_addition(a,b)
+            registers[rd].value=c
+        if funct7==R_encoding.R_funct7["sub"] and funct3 == R_encoding.R_funct3["sub"]:
+            c=two_complement_subtraction(a,b)
+            registers[rd].value=c
+        if funct7==R_encoding.R_funct7["slt"] and funct3 == R_encoding.R_funct3["slt"]:
+            if a_value<b_value:
+                registers[rd].value="0"*31 + "1"
+        if funct7==R_encoding.R_funct7["sltu"] and funct3 == R_encoding.R_funct3["sltu"]:
+            if a_unsigned<b_unsigned:
+                registers[rd].value="0"*31 + "1"
+        if funct7==R_encoding.R_funct7["xor"] and funct3 == R_encoding.R_funct3["xor"]:
+            c=""
+            for i in range(len(a)):
+                if a[i]=='1' and b[i]=='1':
+                    c+='0'
+                elif a[i]=='1' or b[i]=='1':
+                    c+='1'
+                else:
+                    c+='0'
+            registers[rd].value=c
+        if funct7==R_encoding.R_funct7["sll"] and funct3 == R_encoding.R_funct3["sll"]:
+            c=""
+            shift=int(b[-5:],2)
+            c=a[shift:]+("0"*shift)
+            registers[rd].value=c
+        if funct7==R_encoding.R_funct7["srl"] and funct3 == R_encoding.R_funct3["srl"]:
+            shift=int(b[-5:],2)
+            c=("0"*shift)+a[:(-1*shift)]
+            registers[rd].value=c
+        if funct7==R_encoding.R_funct7["or"] and funct3 == R_encoding.R_funct3["or"]:
+            c=""
+            for i in range(len(a)):
+                if a[i]=='1' or b[i]=='1':
+                    c+='1'
+                else:
+                    c+='0'
+            registers[rd].value=c
+        if funct7==R_encoding.R_funct7["and"] and funct3 == R_encoding.R_funct3["and"]:
+            c=""
+            for i in range(len(a)):
+                if a[i]=='1' and b[i]=='1':
+                    c+='1'
+                else:
+                    c+='0'
+            registers[rd].value=c
+
+
 
     if oppcode in I_encoding.I_oppcode.values():
         # to be done by ramneek
