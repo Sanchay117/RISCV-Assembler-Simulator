@@ -9,21 +9,24 @@ from Assembler import binary_to_specified_len
 
 def twos_complement(x):
     '''
-    Returns the 2's complement of `x`'
+    Returns the 2's complement of `x`.
     :param x:
     :return: y
     '''
-    y=''
-    ind = 0
-    for i in range(len(x)-1, -1, -1):
-        if x[i] == '1':
-            ind = i
-    for i in range(ind):
-        if x[i] == '1':
-            y+="0"
+    y = ''
+    X = False
+
+    for i in range(len(x) - 1, -1, -1):
+        if not found_one:
+            if x[i] == '1':
+                X = True
+            y = x[i] + y
         else:
-            y+="1"
-    y+=x[ind:]
+            y = ('1' if x[i] == '0' else '0') + y
+
+    if not found_one:
+        return '0' * len(x)  # if no '1' found, return all 0s
+
     return y
 
 def two_complement_addition(a, b):
