@@ -184,7 +184,16 @@ while pc < len(lines)*4:
 
     if oppcode == S_encoding.S_oppcode:
         # to be done by pranav
-        pass
+        if oppcode == S_encoding.S_oppcode:
+            # sw rs2, imm[11:0](rs1)
+            rs2,rs1,imm = line[-25:-20],line[-20:-15],line[-32:-24] + line[-12:-6]
+        
+            memory_address = two_comp_to_base_10(registers[rs1].value) + two_comp_to_base_10(imm)
+            memory_address = hex(memory_address)[2:]
+
+            memory[memory_address] = binary_to_specified_len(registers[rs2].value,32)
+
+    
 
     if oppcode == B_encoding.B_oppcode:
         # to be done by sanchay
@@ -220,7 +229,28 @@ while pc < len(lines)*4:
 
     if oppcode in U_encoding.U_oppcode.values():
         # to be done by pranav
-        pass
+
+        if oppcode == U_encoding.U_oppcode:
+        
+
+            rd = line[-12:-7]
+            imm = line[-32:-11]
+            if(oppcode == "0010111"):
+            # auipc rd, imm[31:12]
+                val1 = bin(pc)[2:]   #converting integer PC to 2's complement
+                val1 = binary_to_specified_len(val1,32)   #Extending binary PC to 32 bits
+  
+                val2 = binary_to_specified_len(imm,32)  #Extending binary_immediate to 32 bits
+
+                sum = two_complement_addition(val1, val2) # Adding both values
+                registers[rd].value = sum   #storing value in register rd
+
+
+        if(oppcode == "0110111"):
+
+            val = binary_to_specified_len(imm,32)   #Extending binary_imm to 32 bits
+            registers[rd].value = val               #Storing 32 bit value in register rd
+
 
     if oppcode == J_encoding.J_oppcode:
         # to be done by nischay
