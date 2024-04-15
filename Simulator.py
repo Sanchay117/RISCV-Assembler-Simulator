@@ -200,7 +200,28 @@ while pc < len(lines)*4:
 
     if oppcode in I_encoding.I_oppcode.values():
         # to be done by ramneek
-        pass
+        rd = line[-12:-7]
+        extfun = line[-15:-12]
+        rs1 = line[-20:-15]
+        imm = line[-31:-20]
+        imm = binary_to_specified_len(imm, 32)
+        # print(registers[rs1].value)
+        if oppcode == I_encoding.I_oppcode["lw"]:
+            final_ans="0x000"+hex(two_comp_to_base_10(two_complement_addition(registers[rs1].value, imm)))[2:]
+            registers[rd].value = final_ans
+            print(final_ans)
+        if oppcode == I_encoding.I_oppcode["addi"] and extfun == I_encoding.I_funct3["addi"]:
+            final_ans = two_complement_addition(registers[rs1].value, imm)
+            registers[rd].value=final_ans
+        if oppcode == I_encoding.I_oppcode["sltiu"] and extfun == I_encoding.I_funct3["sltiu"]:
+            if two_comp_to_base_10(registers[rs1].value)<two_comp_to_base_10(imm):
+                registers[rd].value = 1
+        if oppcode == I_encoding.I_oppcode["jalr"]:
+            registers[rd].value = binary_to_specified_len(bin(pc+4)[2:],32)
+            final_ans = two_complement_addition(registers[rs1].value, imm)
+            #make last digit zero
+            final_ans=final_ans[:32]+"0"
+            pc = two_comp_to_base_10(final_ans)
 
     if oppcode == S_encoding.S_oppcode:
         # to be done by pranav
