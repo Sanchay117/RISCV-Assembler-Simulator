@@ -7,7 +7,7 @@ import Encoding.J_encoding as J_encoding
 import sys
 
 def binary_to_specified_len(bin,l):
-    return ("1"*(l-len(bin))) + bin
+    return (bin[0]*(l-len(bin))) + bin
 
 def twos_complement(x):
     '''
