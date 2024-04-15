@@ -56,6 +56,26 @@ def two_comp_to_base_10(x):
         return -1*int(twos_complement(x),2)
     else:
         return int(x,2)
+    
+def int_to_binary(number):
+    if number == 0:
+        return "0"  
+    if number < 0:
+        print("Negative number")
+        sys.exit()
+    binary = ""
+    fraction = number - int(number)
+    integer_part = abs(int(number))
+    while integer_part > 0:
+        binary = str(integer_part % 2) + binary
+        integer_part //= 2
+    max_digits = 16  
+    while fraction > 0 and len(binary) <= max_digits:
+        fraction *= 2
+        bit = int(fraction)
+        binary += str(bit)
+        fraction -= bit
+    return binary
 
 input_file,output_file = sys.argv[1],sys.argv[2]
 
@@ -186,7 +206,16 @@ while pc < len(lines)*4:
         pass
 
     if oppcode == J_encoding.J_oppcode:
-        # to be done by nischay
-        pass
+        imm = line[-9:-1] + line[-10] + line[-20:-10] + line[-1]
+        #rd = line[-25:-20]
+        ret_add = pc
+        ret_add = int_to_binary(ret_add)
+        rd = two_complement_addition(ret_add, "00100")
+        rd = binary_to_specified_len(rd, 32)
+        #rd = ret_add
+        ##PC = PC + sext({imm[20:1],1'b0})
+        imm_bits = imm[-20:]  # Extract bits 1 to 20 from immediate value
+        extended_imm = binary_to_specified_len((imm_bits + '0'), 32)  # Perform sign extension with LSB=0
+        pc += two_comp_to_base_10(extended_imm)
 
     pc+=4
