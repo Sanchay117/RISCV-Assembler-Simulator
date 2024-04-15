@@ -5,7 +5,9 @@ import Encoding.B_encoding as B_encoding
 import Encoding.U_encoding as U_encoding
 import Encoding.J_encoding as J_encoding
 import sys
-from Assembler import binary_to_specified_len
+
+def binary_to_specified_len(bin,l):
+    return ("1"*(l-len(bin))) + bin
 
 def twos_complement(x):
     '''
@@ -62,8 +64,43 @@ input_file,output_file = sys.argv[1],sys.argv[2]
 from registers import Register,register_address
 
 registers={}
-for register in register_address.keys():
-    registers[register] = Register(register_address[register])
+for register_val in register_address.values():
+    registers[register_val] = Register(register_address[register])
+
+memory={
+    "0x00010000":"0"*32,
+    "0x00010004":"0"*32,
+    "0x00010008":"0"*32,
+    "0x0001000c":"0"*32,
+    "0x00010010":"0"*32,
+    "0x00010014":"0"*32,
+    "0x00010018":"0"*32,
+    "0x0001001c":"0"*32,
+    "0x00010020":"0"*32,
+    "0x00010024":"0"*32,
+    "0x00010028":"0"*32,
+    "0x0001002c":"0"*32,
+    "0x00010030":"0"*32,
+    "0x00010034":"0"*32,
+    "0x00010038":"0"*32,
+    "0x0001003c":"0"*32,
+    "0x00010040":"0"*32,
+    "0x00010044":"0"*32,
+    "0x00010048":"0"*32,
+    "0x0001004c":"0"*32,
+    "0x00010050":"0"*32,
+    "0x00010054":"0"*32,
+    "0x00010058":"0"*32,
+    "0x0001005c":"0"*32,
+    "0x00010060":"0"*32,
+    "0x00010064":"0"*32,
+    "0x00010068":"0"*32,
+    "0x0001006c":"0"*32,
+    "0x00010070":"0"*32,
+    "0x00010074":"0"*32,
+    "0x00010078":"0"*32,
+    "0x0001007c":"0"*32,
+}
 
 inp=open(input_file,'r')
 lines=inp.readlines()
