@@ -209,7 +209,7 @@ while pc < len(lines)*4:
             rs2,rs1,imm = line[-25:-20],line[-20:-15],line[-32:-25] + line[-12:-7]
         
             memory_address = two_comp_to_base_10(registers[rs1].value) + two_comp_to_base_10(imm)
-            memory_address = hex(memory_address)[2:]
+            memory_address = "0x000" + hex(memory_address)[2:]
 
             memory[memory_address] = binary_to_specified_len(registers[rs2].value,32)
 
