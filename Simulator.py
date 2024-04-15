@@ -273,11 +273,11 @@ while pc < len(lines)*4:
 
 
     if oppcode == J_encoding.J_oppcode:
-        imm = line[-9:-1] + line[-10] + line[-20:-10] + line[-1]
+        imm = line[-1] + line[-20:-10] + line[-10] + line[-9:-1]
         #rd = line[-25:-20]
         ret_add = pc
         ret_add = int_to_binary(ret_add)
-        rd = two_complement_addition(ret_add, "00100")
+        rd = two_complement_addition(ret_add, "100")
         rd = binary_to_specified_len(rd, 32)
         #rd = ret_add
         ##PC = PC + sext({imm[20:1],1'b0})
