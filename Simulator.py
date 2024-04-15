@@ -65,7 +65,7 @@ from registers import Register,register_address
 
 registers={}
 for register_val in register_address.values():
-    registers[register_val] = Register(register_address[register])
+    registers[register_val] = Register(register_val)
 
 memory={
     "0x00010000":"0"*32,
