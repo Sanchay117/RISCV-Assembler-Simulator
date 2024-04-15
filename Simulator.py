@@ -206,7 +206,7 @@ while pc < len(lines)*4:
         # to be done by pranav
         if oppcode == S_encoding.S_oppcode:
             # sw rs2, imm[11:0](rs1)
-            rs2,rs1,imm = line[-25:-20],line[-20:-15],line[-32:-24] + line[-12:-6]
+            rs2,rs1,imm = line[-25:-20],line[-20:-15],line[-32:-25] + line[-12:-7]
         
             memory_address = two_comp_to_base_10(registers[rs1].value) + two_comp_to_base_10(imm)
             memory_address = hex(memory_address)[2:]
@@ -254,7 +254,7 @@ while pc < len(lines)*4:
         
 
             rd = line[-12:-7]
-            imm = line[-32:-11]
+            imm = line[-32:-12]
             if(oppcode == "0010111"):
             # auipc rd, imm[31:12]
                 val1 = bin(pc)[2:]   #converting integer PC to 2's complement
