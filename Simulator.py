@@ -277,8 +277,9 @@ while pc < len(lines)*4:
         #rd = line[-25:-20]
         ret_add = pc
         ret_add = int_to_binary(ret_add)
-        rd = two_complement_addition(ret_add, "100")
-        rd = binary_to_specified_len(rd, 32)
+        ret_add = binary_to_specified_len(ret_add, 32)
+        add = binary_to_specified_len("100", 32)
+        rd = two_complement_addition(ret_add, add)
         #rd = ret_add
         ##PC = PC + sext({imm[20:1],1'b0})
         imm_bits = imm[-20:]  # Extract bits 1 to 20 from immediate value
