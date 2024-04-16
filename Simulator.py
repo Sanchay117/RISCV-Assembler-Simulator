@@ -324,7 +324,7 @@ while pc < len(lines)*4:
         #rd = ret_add
         ##PC = PC + sext({imm[20:1],1'b0})
         imm_bits = imm[-20:]  # Extract bits 1 to 20 from immediate value
-        extended_imm = binary_to_specified_len((imm_bits + '0'), 32)  # Perform sign extension with LSB=0
+        extended_imm = binary_to_specified_len((imm_bits[1:20] + "0"), 32)  # Perform sign extension with LSB=0
         pc += two_comp_to_base_10(extended_imm)
 
     bin_pc = '0' + bin(pc+4)[2:]
