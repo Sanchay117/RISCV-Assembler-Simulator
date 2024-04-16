@@ -135,6 +135,7 @@ while pc < len(lines)*4:
     line=lines[int(pc/4)]
     line=line.strip()
     oppcode=line[25:32] #line has  \n in last
+    #print(len(lines)*4)
 
     if oppcode == R_encoding.R_oppcode:
         print("R TYPE EXECUTING")
@@ -324,8 +325,9 @@ while pc < len(lines)*4:
         #rd = ret_add
         ##PC = PC + sext({imm[20:1],1'b0})
         imm_bits = imm[-20:]  # Extract bits 1 to 20 from immediate value
-        extended_imm = binary_to_specified_len((imm_bits[1:20] + "0"), 32)  # Perform sign extension with LSB=0
+        extended_imm = binary_to_specified_len((imm_bits[20:1] + "0"), 32)  # Perform sign extension with LSB=0
         pc += two_comp_to_base_10(extended_imm)
+
 
     bin_pc = '0' + bin(pc+4)[2:]
     line_out = '0b' + binary_to_specified_len(bin_pc,32) + ' '
