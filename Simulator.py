@@ -126,11 +126,14 @@ inp=open(input_file,'r')
 lines=inp.readlines()
 inp.close()
 
+out =  []
+line_out = []
+
 pc = 0 # programm counter
 
 while pc < len(lines)*4:
     line=lines[int(pc/4)]
-    oppcode=line[-7:]
+    oppcode=line[25:32] #line has  \n in last
 
     if oppcode == R_encoding.R_oppcode:
         # to be done by sanchay
@@ -200,7 +203,30 @@ while pc < len(lines)*4:
 
     if oppcode in I_encoding.I_oppcode.values():
         # to be done by ramneek
-        pass
+        rd = line[-12:-7]
+        extfun = line[-15:-12]
+        rs1 = line[-20:-15]
+        imm = line[-31:-20]
+        imm = binary_to_specified_len(imm, 32)
+        # print(registers[rs1].value)
+        if oppcode == I_encoding.I_oppcode["lw"]:
+            final_ans="0x000"+hex(two_comp_to_base_10(two_complement_addition(registers[rs1].value, imm)))[2:]
+            registers[rd].value = final_ans
+            print(final_ans)
+        if oppcode == I_encoding.I_oppcode["addi"] and extfun == I_encoding.I_funct3["addi"]:
+            
+            final_ans = two_complement_addition(registers[rs1].value, imm)
+            registers[rd].value=final_ans
+        if oppcode == I_encoding.I_oppcode["sltiu"] and extfun == I_encoding.I_funct3["sltiu"]:
+            
+            if two_comp_to_base_10(registers[rs1].value)<two_comp_to_base_10(imm):
+                registers[rd].value = 1
+        if oppcode == I_encoding.I_oppcode["jalr"]:
+            registers[rd].value = binary_to_specified_len(bin(pc+4)[2:],32)
+            final_ans = two_complement_addition(registers[rs1].value, imm)
+            #make last digit zero
+            final_ans=final_ans[:32]+"0"
+            pc = two_comp_to_base_10(final_ans)
 
     if oppcode == S_encoding.S_oppcode:
         # to be done by pranav
@@ -209,49 +235,43 @@ while pc < len(lines)*4:
             rs2,rs1,imm = line[-25:-20],line[-20:-15],line[-32:-25] + line[-12:-7]
         
             memory_address = two_comp_to_base_10(registers[rs1].value) + two_comp_to_base_10(imm)
-            memory_address = hex(memory_address)[2:]
+            memory_address = "0x000" + hex(memory_address)[2:]
 
             memory[memory_address] = binary_to_specified_len(registers[rs2].value,32)
 
     
 
-    if oppcode == B_encoding.B_oppcode:
-        # to be done by sanchay
-        imm=line[0] + line[-8] + line[-31:-25] + line[-12:-8] + "0"
-        funct3=line[-15:-12]
-        rs2=line[-25:-20]
-        rs1=line[-20:-15]
-        rs2_val=two_comp_to_base_10(rs2)
-        rs1_val=two_comp_to_base_10(rs1)
-        rs1_unsigned=int(rs1,2)
-        rs2_unsigned=int(rs2,2)
+    # if oppcode == B_encoding.B_oppcode:
+    #     # to be done by sanchay
+    #     imm=line[0] + line[-8] + line[-31:-25] + line[-12:-8] + "0"
+    #     funct3=line[-15:-12]
+    #     rs2=line[-25:-20]
+    #     rs1=line[-20:-15]
+    #     rs2_val=two_comp_to_base_10(rs2)
+    #     rs1_val=two_comp_to_base_10(rs1)
+    #     rs1_unsigned=int(rs1_val,2)
+    #     rs2_unsigned=int(rs2_val,2)
 
-        if funct3 == B_encoding.B_funct3["beq"]:
-            if(rs1_val==rs2_val):
-                pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
-                break
-        if funct3 == B_encoding.B_funct3["bne"]:
-            if(rs1_val!=rs2_val):
-                pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
-                break
-        if funct3 == B_encoding.B_funct3["bge"]:
-            if(rs1_val>=rs2_val):
-                pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
-                break
-        if funct3 == B_encoding.B_funct3["bgeu"]:
-            if(rs1_unsigned>=rs2_unsigned):
-                pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
-                break
-        if funct3 == B_encoding.B_funct3["blt"]:
-            if(rs1_val<rs2_val):
-                pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
-                break
-        if funct3 == B_encoding.B_funct3["bltu"]:
-            if(rs1_unsigned<rs2_unsigned):
-                pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
-                break
-        # what if pc increase lets say currently we at 0 but a B instruction causes it to get 8
-        # so now do we straight away goto 8 or do we go to 12 because pc+=4 after every iteration?
+    #     if funct3 == B_encoding.B_funct3["beq"]:
+    #         if(rs1_val==rs2_val):
+    #             pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
+    #     if funct3 == B_encoding.B_funct3["bne"]:
+    #         if(rs1_val!=rs2_val):
+    #             pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
+    #     if funct3 == B_encoding.B_funct3["bge"]:
+    #         if(rs1_val>=rs2_val):
+    #             pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
+    #     if funct3 == B_encoding.B_funct3["bgeu"]:
+    #         if(rs1_unsigned>=rs2_unsigned):
+    #             pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
+    #     if funct3 == B_encoding.B_funct3["blt"]:
+    #         if(rs1_val<rs2_val):
+    #             pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
+    #     if funct3 == B_encoding.B_funct3["bltu"]:
+    #         if(rs1_unsigned<rs2_unsigned):
+    #             pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
+    #     # what if pc increase lets say currently we at 0 but a B instruction causes it to get 8
+    #     # so now do we straight away goto 8 or do we go to 12 because pc+=4 after every iteration?
 
     if oppcode in U_encoding.U_oppcode.values():
         # to be done by pranav
@@ -272,23 +292,50 @@ while pc < len(lines)*4:
                 registers[rd].value = sum   #storing value in register rd
 
 
-        if(oppcode == "0110111"):
+            if(oppcode == "0110111"):
 
-            val = binary_to_specified_len(imm,32)   #Extending binary_imm to 32 bits
-            registers[rd].value = val               #Storing 32 bit value in register rd
+                val = binary_to_specified_len(imm,32)   #Extending binary_imm to 32 bits
+                registers[rd].value = val               #Storing 32 bit value in register rd
 
 
     if oppcode == J_encoding.J_oppcode:
-        imm = line[-9:-1] + line[-10] + line[-20:-10] + line[-1]
+        imm = line[-1] + line[-20:-10] + line[-10] + line[-9:-1]
         #rd = line[-25:-20]
         ret_add = pc
         ret_add = int_to_binary(ret_add)
-        rd = two_complement_addition(ret_add, "00100")
-        rd = binary_to_specified_len(rd, 32)
+        ret_add = binary_to_specified_len(ret_add, 32)
+        add = binary_to_specified_len("100", 32)
+        rd = two_complement_addition(ret_add, add)
         #rd = ret_add
         ##PC = PC + sext({imm[20:1],1'b0})
         imm_bits = imm[-20:]  # Extract bits 1 to 20 from immediate value
         extended_imm = binary_to_specified_len((imm_bits + '0'), 32)  # Perform sign extension with LSB=0
         pc += two_comp_to_base_10(extended_imm)
 
-    pc+=4
+    bin_pc = '0' + bin(pc+4)[2:]
+    line_out = '0b' + binary_to_specified_len(bin_pc,32) + ' '
+
+    for register in registers:
+        line_out += '0b'+registers[register].value+' '
+
+    line_out.rstrip(' ')
+    out += [line_out]
+
+    pc += 4
+    
+    
+
+for location in memory:
+    out += [location + ":0b"+ memory[location]]
+
+output = open(output_file,"w")
+
+for x in out:
+    if(out.index(x) == len(out)-1):
+        output.write(x)
+    else: 
+        output.write(x + '\n')
+
+output.close()
+
+
