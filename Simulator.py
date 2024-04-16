@@ -203,6 +203,7 @@ while pc < len(lines)*4:
                 else:
                     c+='0'
             registers[rd].value=c
+        print(pc)
 
     if oppcode in I_encoding.I_oppcode.values():
         print("I TYPE EXECUTING")
@@ -230,6 +231,7 @@ while pc < len(lines)*4:
             #make last digit zero
             final_ans=final_ans[:32]+"0"
             pc = two_comp_to_base_10(final_ans)
+        print(pc)
 
     if oppcode == S_encoding.S_oppcode:
         print("S TYPE EXECUTING")
@@ -242,6 +244,7 @@ while pc < len(lines)*4:
             memory_address = "0x000" + hex(memory_address)[2:]
 
             memory[memory_address] = binary_to_specified_len(registers[rs2].value,32)
+        print(pc)
 
     
 
@@ -283,6 +286,7 @@ while pc < len(lines)*4:
                 break
         # what if pc increase lets say currently we at 0 but a B instruction causes it to get 8
         # so now do we straight away goto 8 or do we go to 12 because pc+=4 after every iteration?
+        print(pc)
 
     if oppcode in U_encoding.U_oppcode.values():
         # to be done by pranav
@@ -309,13 +313,14 @@ while pc < len(lines)*4:
 
                 val = binary_to_specified_len(imm,32)   #Extending binary_imm to 32 bits
                 registers[rd].value = val               #Storing 32 bit value in register rd
+        print(pc)
 
 
     if oppcode == J_encoding.J_oppcode:
         # done by nischay
         print("J TYPE EXECUTING")
 
-        imm = line[-1] + line[-20:-10] + line[-10] + line[-9:-1]
+        imm = line[0] + line[10:20] +line[9] + line[1:9]
         #rd = line[-25:-20]
         ret_add = pc
         ret_add = int_to_binary(ret_add)
@@ -325,8 +330,9 @@ while pc < len(lines)*4:
         #rd = ret_add
         ##PC = PC + sext({imm[20:1],1'b0})
         imm_bits = imm[-20:]  # Extract bits 1 to 20 from immediate value
-        extended_imm = binary_to_specified_len((imm_bits[20:1] + "0"), 32)  # Perform sign extension with LSB=0
+        extended_imm = binary_to_specified_len((imm_bits[0:19] + "0"), 32)  # Perform sign extension with LSB=0
         pc += two_comp_to_base_10(extended_imm)
+        print(pc)
 
 
     bin_pc = '0' + bin(pc+4)[2:]
