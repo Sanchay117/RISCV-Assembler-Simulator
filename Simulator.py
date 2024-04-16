@@ -262,8 +262,15 @@ while pc < len(lines)*4:
 
         if funct3 == B_encoding.B_funct3["beq"]:
             if(rs1_val==rs2_val):
-                pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
-                break
+                
+                temp_pc = pc + two_comp_to_base_10(binary_to_specified_len(imm,32))
+                if temp_pc == pc:
+                    out += [out[-1]]
+                    break
+                else:
+                    print("hey")
+                    pc = temp_pc
+
         if funct3 == B_encoding.B_funct3["bne"]:
             if(rs1_val!=rs2_val):
                 pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
@@ -354,11 +361,12 @@ for location in memory:
 output = open(output_file,"w")
 
 for x in out:
-    if(out.index(x) == len(out)-1):
-        output.write(x)
-    else:
-        output.write(x + '\n')
-
+    output.write(x+'\n')
+# for x in out:
+#     if(out.index(x) == len(out)-1):
+#         output.write(x)
+#     else:
+#         output.write(x + '\n')
 
 output.close()
 
