@@ -269,8 +269,8 @@ while pc < len(lines)*4:
     #     if funct3 == B_encoding.B_funct3["bltu"]:
     #         if(rs1_unsigned<rs2_unsigned):
     #             pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
-        # what if pc increase lets say currently we at 0 but a B instruction causes it to get 8
-        # so now do we straight away goto 8 or do we go to 12 because pc+=4 after every iteration?
+    #     # what if pc increase lets say currently we at 0 but a B instruction causes it to get 8
+    #     # so now do we straight away goto 8 or do we go to 12 because pc+=4 after every iteration?
 
     if oppcode in U_encoding.U_oppcode.values():
         # to be done by pranav
@@ -311,8 +311,8 @@ while pc < len(lines)*4:
         extended_imm = binary_to_specified_len((imm_bits + '0'), 32)  # Perform sign extension with LSB=0
         pc += two_comp_to_base_10(extended_imm)
 
-    bin_pc = bin(pc+4)[2:]
-    line_out = '0b' + binary_to_specified_len(bin_pc,32)
+    bin_pc = '0' + bin(pc+4)[2:]
+    line_out = '0b' + binary_to_specified_len(bin_pc,32) + ' '
 
     for register in registers:
         line_out += '0b'+registers[register].value+' '
