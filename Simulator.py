@@ -345,18 +345,12 @@ for location in memory:
 
 output = open(output_file,"w")
 
-# for x in out:
-#     if(out.index(x) == len(out)-1):
-#         output.write(x)
-#     else:
-#         output.write(x + '\n')
+for x in out:
+    if(out.index(x) == len(out)-1):
+        output.write(x)
+    else:
+        output.write(x + '\n')
 
-x=""
-for register in registers:
-    x+="0b"+registers[register].value+" "
-output.write(x + "\n")
-for mem in memory:
-    output.write(mem+":0b"+ memory[mem] + "\n")
 
 output.close()
 
