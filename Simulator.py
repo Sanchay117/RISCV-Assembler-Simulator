@@ -133,9 +133,11 @@ pc = 0 # programm counter
 
 while pc < len(lines)*4:
     line=lines[int(pc/4)]
+    line=line.strip()
     oppcode=line[25:32] #line has  \n in last
 
     if oppcode == R_encoding.R_oppcode:
+        print("R TYPE EXECUTING")
         # to be done by sanchay
 
         funct7,funct3 = line[0:7],line[17:20]
@@ -202,17 +204,17 @@ while pc < len(lines)*4:
             registers[rd].value=c
 
     if oppcode in I_encoding.I_oppcode.values():
+        print("I TYPE EXECUTING")
         # to be done by ramneek
-        rd = line[-12:-7]
-        extfun = line[-15:-12]
-        rs1 = line[-20:-15]
-        imm = line[-31:-20]
+        rd = line[20:25]
+        extfun = line[17:20]
+        rs1 = line[12:17]
+        imm = line[0:12]
         imm = binary_to_specified_len(imm, 32)
         # print(registers[rs1].value)
         if oppcode == I_encoding.I_oppcode["lw"]:
             final_ans="0x000"+hex(two_comp_to_base_10(two_complement_addition(registers[rs1].value, imm)))[2:]
-            registers[rd].value = final_ans
-            print(final_ans)
+            registers[rd].value = memory[final_ans]
         if oppcode == I_encoding.I_oppcode["addi"] and extfun == I_encoding.I_funct3["addi"]:
             
             final_ans = two_complement_addition(registers[rs1].value, imm)
@@ -229,6 +231,7 @@ while pc < len(lines)*4:
             pc = two_comp_to_base_10(final_ans)
 
     if oppcode == S_encoding.S_oppcode:
+        print("S TYPE EXECUTING")
         # to be done by pranav
         if oppcode == S_encoding.S_oppcode:
             # sw rs2, imm[11:0](rs1)
@@ -242,6 +245,7 @@ while pc < len(lines)*4:
     
 
     if oppcode == B_encoding.B_oppcode:
+        print("B TYPE EXECUTING")
         # to be done by sanchay
         imm=line[0] + line[-8] + line[-31:-25] + line[-12:-8] + "0"
         funct3=line[-15:-12]
@@ -281,6 +285,8 @@ while pc < len(lines)*4:
 
     if oppcode in U_encoding.U_oppcode.values():
         # to be done by pranav
+        print("U TYPE EXECUTING")
+
 
         if oppcode == U_encoding.U_oppcode:
         
@@ -305,6 +311,9 @@ while pc < len(lines)*4:
 
 
     if oppcode == J_encoding.J_oppcode:
+        # done by nischay
+        print("J TYPE EXECUTING")
+
         imm = line[-1] + line[-20:-10] + line[-10] + line[-9:-1]
         #rd = line[-25:-20]
         ret_add = pc
@@ -336,12 +345,18 @@ for location in memory:
 
 output = open(output_file,"w")
 
-for x in out:
-    if(out.index(x) == len(out)-1):
-        output.write(x)
-    else: 
-        output.write(x + '\n')
+# for x in out:
+#     if(out.index(x) == len(out)-1):
+#         output.write(x)
+#     else:
+#         output.write(x + '\n')
+
+x=""
+for register in registers:
+    x+="0b"+registers[register].value+" "
+output.write(x + "\n")
+for mem in memory:
+    output.write(mem+":0b"+ memory[mem] + "\n")
 
 output.close()
-
 
