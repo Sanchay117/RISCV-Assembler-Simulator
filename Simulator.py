@@ -133,9 +133,8 @@ pc = 0 # programm counter
 
 while pc < len(lines)*4:
     line=lines[int(pc/4)]
-    oppcode=line[-7:]
+    oppcode=line[25:32] #line has  \n in last
 
-    
     if oppcode == R_encoding.R_oppcode:
         # to be done by sanchay
 
@@ -215,9 +214,11 @@ while pc < len(lines)*4:
             registers[rd].value = final_ans
             print(final_ans)
         if oppcode == I_encoding.I_oppcode["addi"] and extfun == I_encoding.I_funct3["addi"]:
+            
             final_ans = two_complement_addition(registers[rs1].value, imm)
             registers[rd].value=final_ans
         if oppcode == I_encoding.I_oppcode["sltiu"] and extfun == I_encoding.I_funct3["sltiu"]:
+            
             if two_comp_to_base_10(registers[rs1].value)<two_comp_to_base_10(imm):
                 registers[rd].value = 1
         if oppcode == I_encoding.I_oppcode["jalr"]:
@@ -317,23 +318,23 @@ while pc < len(lines)*4:
     for register in registers:
         line_out += '0b'+registers[register].value+' '
 
-    print(line_out)
     line_out.rstrip(' ')
-
     out += [line_out]
 
     pc += 4
     
     
 
+for location in memory:
+    out += [location + ":0b"+ memory[location]]
 
 output = open(output_file,"w")
 
 for x in out:
-    if(out.index(x) == len(lines)-1):
+    if(out.index(x) == len(out)-1):
         output.write(x)
     else: 
-        output.write(x + '/n')
+        output.write(x + '\n')
 
 output.close()
 
