@@ -86,7 +86,7 @@ from registers import Register,register_address
 registers={}
 for register_val in register_address.values():
     registers[register_val] = Register(register_val)
-
+registers["00010"].value = "00000000000000000000000100000000"  #value of register sp
 memory={
     "0x00010000":"0"*32,
     "0x00010004":"0"*32,
