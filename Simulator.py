@@ -287,10 +287,10 @@ while pc < len(lines)*4:
                 registers[rd].value = sum   #storing value in register rd
 
 
-        if(oppcode == "0110111"):
+            if(oppcode == "0110111"):
 
-            val = binary_to_specified_len(imm,32)   #Extending binary_imm to 32 bits
-            registers[rd].value = val               #Storing 32 bit value in register rd
+                val = binary_to_specified_len(imm,32)   #Extending binary_imm to 32 bits
+                registers[rd].value = val               #Storing 32 bit value in register rd
 
 
     if oppcode == J_encoding.J_oppcode:
