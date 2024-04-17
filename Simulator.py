@@ -255,42 +255,45 @@ while pc < len(lines)*4:
         funct3=line[-15:-12]
         rs2=line[-25:-20]
         rs1=line[-20:-15]
-        rs2_val=two_comp_to_base_10(rs2)
-        rs1_val=two_comp_to_base_10(rs1)
-        rs1_unsigned=int(rs1,2)
-        rs2_unsigned=int(rs2,2)
+        rs2_val=two_comp_to_base_10(registers[rs1].value)
+        rs1_val=two_comp_to_base_10(registers[rs2].value)
+        print(rs1_val,rs2_val)
+        rs1_unsigned=int(registers[rs1].value,2)
+        rs2_unsigned=int(registers[rs2].value,2)
 
         if funct3 == B_encoding.B_funct3["beq"]:
             if(rs1_val==rs2_val):
-                
-                temp_pc = pc + two_comp_to_base_10(binary_to_specified_len(imm,32))
-                if temp_pc == pc:
-                    out += [out[-1]]
-                    break
-                else:
-                    print("hey")
-                    pc = temp_pc
+
+                if(rs1_val==rs2_val):
+                    pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
+                    print(pc)
+                    continue
 
         if funct3 == B_encoding.B_funct3["bne"]:
             if(rs1_val!=rs2_val):
                 pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
-                break
+                print(pc)
+                continue
         if funct3 == B_encoding.B_funct3["bge"]:
             if(rs1_val>=rs2_val):
                 pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
-                break
+                print(pc)
+                continue
         if funct3 == B_encoding.B_funct3["bgeu"]:
             if(rs1_unsigned>=rs2_unsigned):
                 pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
-                break
+                print(pc)
+                continue
         if funct3 == B_encoding.B_funct3["blt"]:
             if(rs1_val<rs2_val):
                 pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
-                break
+                print(pc)
+                continue
         if funct3 == B_encoding.B_funct3["bltu"]:
             if(rs1_unsigned<rs2_unsigned):
                 pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
-                break
+                print(pc)
+                continue
         # what if pc increase lets say currently we at 0 but a B instruction causes it to get 8
         # so now do we straight away goto 8 or do we go to 12 because pc+=4 after every iteration?
         print(pc)
