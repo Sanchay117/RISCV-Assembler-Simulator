@@ -152,10 +152,12 @@ line_out = []
 pc = 0 # programm counter
 
 while pc < len(lines)*4:
-
+    # time.sleep(1)
     print("R19 ",registers["10011"].value)
     line=lines[int(pc/4)]
     line=line.strip()
+    temp_pc=pc
+
     # if line == "00000000000000000000000001100011":
     #     break
     oppcode=line[25:32] #line has  \n in last
@@ -242,7 +244,7 @@ while pc < len(lines)*4:
                     c+='0'
             registers[rd].value=c
             print("and")
-        print(print_register())
+        print_register()
 
     if oppcode in I_encoding.I_oppcode.values():
         print("PC->",pc)
@@ -266,9 +268,10 @@ while pc < len(lines)*4:
             print("sltiu",end="->")
             if two_comp_to_base_10(registers[rs1].value)<two_comp_to_base_10(imm):
                 registers[rd].value = 1
-                print("triggered",end="")
-            print('\n')
+                print("triggered")
+            print('condn not triggered')
         if oppcode == I_encoding.I_oppcode["jalr"]:
+            print('jalr')
             print(binary_to_specified_len('0'+bin(pc+4)[2:],32))
             registers[rd].value = binary_to_specified_len('0'+bin(pc+4)[2:],32)
             print(registers[rs1].value)
@@ -276,13 +279,16 @@ while pc < len(lines)*4:
             final_ans = two_complement_addition(registers[rs1].value, imm)
             print(final_ans)
             #make last digit zero
+            print_register()
             final_ans=final_ans[0:31] + '0'
             print(final_ans)
+            print("Temp pc is now ",temp_pc)
             pc = two_comp_to_base_10(final_ans)
-            print('jalr')
-            print(print_register())
+            temp_pc = pc;
+
+
             registers["00000"].value="0"*32
-            bin_pc = '0' + bin(pc)[2:]
+            bin_pc = '0' + bin(temp_pc)[2:]
             line_out = '0b' + binary_to_specified_len(bin_pc,32) + ' '
 
             for register in registers:
@@ -291,10 +297,9 @@ while pc < len(lines)*4:
             line_out.rstrip(' ')
             out += [line_out]
             print("Ending the instruction")
-
             continue
             # print('jalr')
-        print(print_register())
+        print_register()
         # print("PC->",pc)
 
     if oppcode == S_encoding.S_oppcode:
@@ -310,14 +315,15 @@ while pc < len(lines)*4:
             memory_address = "0x000" + hex(memory_address)[2:]
 
             memory[memory_address] = binary_to_specified_len(registers[rs2].value,32)
-        print(print_register())
+        print_register()
         print("Memmory is :",memory_address)
-     
+
     
 
     if oppcode == B_encoding.B_oppcode:
         print("B TYPE EXECUTING")
         print("PC->",pc)
+        temp_pc=pc
         # to be done by sanchay
         imm=line[0] + line[-8] + line[-31:-25] + line[-12:-8] + "0"
         funct3=line[-15:-12]
@@ -332,62 +338,143 @@ while pc < len(lines)*4:
         rs2_unsigned=int(registers[rs2].value,2)
 
         if funct3 == B_encoding.B_funct3["beq"]:
+                
             print("Beq")
+            print("Temp pc is now ",temp_pc)
+
             if(rs1_val==rs2_val):
                 if(two_comp_to_base_10(imm) != 0):
                     pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
+                    temp_pc=pc
+
                     # print(pc)
-                    out+=[out[-1]]
+                    registers["00000"].value="0"*32
+                    bin_pc = '0' + bin(temp_pc)[2:]
+                    line_out = '0b' + binary_to_specified_len(bin_pc,32) + ' '
+                    for register in registers:
+                        line_out += '0b'+registers[register].value+' '
+
+                    line_out.rstrip(' ')
+                    out += [line_out]
                     print_register()
                     continue
                 else:
                     # out+=[out[-1]]
                     # print_register()
-                    print("Breaked over")
-                    break
+                    temp_pc=pc
 
+                    registers["00000"].value="0"*32
+                    bin_pc = '0' + bin(temp_pc)[2:]
+                    line_out = '0b' + binary_to_specified_len(bin_pc,32) + ' '
+                    for register in registers:
+                        line_out += '0b'+registers[register].value+' '
+
+                    line_out.rstrip(' ')
+                    out += [line_out]
+                    print("Breaked over")
+                    print_register()
+                    break
+            print_register()
         if funct3 == B_encoding.B_funct3["bne"]:
             print("bne")
             if(rs1_val!=rs2_val):
                 print("Condn triggered")
                 print(rs1_val,rs2_val)
+                print("Temp pc is now ",temp_pc)
+
                 pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
-                print(pc)
-                out+=[out[-1]]
+                temp_pc = pc
+                print("new updated pc for next step",pc)
+                # print(out[-1])
+                # temp_string = out[-1]
+                registers["00000"].value="0"*32
+                bin_pc = '0' + bin(temp_pc)[2:]
+                line_out = '0b' + binary_to_specified_len(bin_pc,32) + ' '
+                for register in registers:
+                    line_out += '0b'+registers[register].value+' '
+
+                line_out.rstrip(' ')
+                out += [line_out]
+                
                 print_register()
+                print("Ending the instruction")
                 continue
             else:
                 print_register()
                 print("Condn not triggered")
         if funct3 == B_encoding.B_funct3["bge"]:
             print('bge')
+            print("Temp pc is now ",temp_pc)
+
             if(rs1_val>=rs2_val):
                 pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
-                out+=[out[-1]]
+                temp_pc=pc
+
+                registers["00000"].value="0"*32
+                bin_pc = '0' + bin(temp_pc)[2:]
+                line_out = '0b' + binary_to_specified_len(bin_pc,32) + ' '
+                for register in registers:
+                    line_out += '0b'+registers[register].value+' '
+
+                line_out.rstrip(' ')
+                out += [line_out]
                 print_register()
                 continue
             print_register()
         if funct3 == B_encoding.B_funct3["bgeu"]:
             print("bgeu")
+            print("Temp pc is now ",temp_pc)
+
             if(rs1_unsigned>=rs2_unsigned):
                 pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
-                out+=[out[-1]]
+                temp_pc=pc
+
+                registers["00000"].value="0"*32
+                bin_pc = '0' + bin(temp_pc)[2:]
+                line_out = '0b' + binary_to_specified_len(bin_pc,32) + ' '
+                for register in registers:
+                    line_out += '0b'+registers[register].value+' '
+
+                line_out.rstrip(' ')
+                out += [line_out]
                 print_register()
                 continue
             print_register()
         if funct3 == B_encoding.B_funct3["blt"]:
+            print("Temp pc is now ",temp_pc)
+
             print("blt")
             if(rs1_val<rs2_val):
                 pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
-                out+=[out[-1]]
+                temp_pc=pc
+
+                registers["00000"].value="0"*32
+                bin_pc = '0' + bin(temp_pc)[2:]
+                line_out = '0b' + binary_to_specified_len(bin_pc,32) + ' '
+                for register in registers:
+                    line_out += '0b'+registers[register].value+' '
+
+                line_out.rstrip(' ')
+                out += [line_out]
                 print_register()
                 continue
             print_register()
         if funct3 == B_encoding.B_funct3["bltu"]:
             print("bltu")
+            print("Temp pc is now ",temp_pc)
+
             if(rs1_unsigned<rs2_unsigned):
                 pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
-                out+=[out[-1]]
+                temp_pc=pc
+
+                registers["00000"].value="0"*32
+                bin_pc = '0' + bin(temp_pc)[2:]
+                line_out = '0b' + binary_to_specified_len(bin_pc,32) + ' '
+                for register in registers:
+                    line_out += '0b'+registers[register].value+' '
+
+                line_out.rstrip(' ')
+                out += [line_out]
                 print_register()
                 continue
             print_register()
@@ -421,7 +508,7 @@ while pc < len(lines)*4:
             print("lui")
             val = binary_to_specified_len(imm,32)   #Extending binary_imm to 32 bits
             registers[rd].value = val               #Storing 32 bit value in register rd
-        print(print_register())
+        print_register()
 
 
     if oppcode == J_encoding.J_oppcode:
@@ -436,19 +523,24 @@ while pc < len(lines)*4:
         print(ret_add)
         ret_add = binary_to_specified_len(ret_add, 32)
         registers[rd].value = ret_add
+
+        
+        imm_bits = imm + '0'  # '1b0' added to imm_bits extending it to 21 bits
+        pc += two_comp_to_base_10(imm_bits)
         temp_pc = pc
+        print("Temp pc is now ",temp_pc)
+
         #rd = ret_add
         ##PC = PC + sext({imm[20:1],1'b0})
-        imm_bits = imm + '0'  # '1b0' added to imm_bits extending it to 21 bits
         # extended_imm = binary_to_specified_len((imm_bits), 32)  # Perform sign extension with LSB=0
-        pc += two_comp_to_base_10(imm_bits)
         print(pc)
-        print(print_register())
+        print_register()
 
         registers["00000"].value="0"*32
-        bin_pc = '0' + bin(pc)[2:]
+        bin_pc = '0' + bin(temp_pc)[2:]
+        print("Temp bin has become", bin_pc)
         line_out = '0b' + binary_to_specified_len(bin_pc,32) + ' '
-        print(line_out)
+        # print(line_out)
         for register in registers:
             line_out += '0b'+registers[register].value+' '
 
@@ -458,7 +550,7 @@ while pc < len(lines)*4:
         continue
 
     registers["00000"].value="0"*32
-    bin_pc = '0' + bin(pc+4)[2:]
+    bin_pc = '0' + bin(temp_pc+4)[2:]
     line_out = '0b' + binary_to_specified_len(bin_pc,32) + ' '
 
     for register in registers:
@@ -477,13 +569,13 @@ for location in memory:
 
 output = open(output_file,"w")
 
-for x in out:
-    output.write(x+'\n')
 # for x in out:
-#     if(out.index(x) == len(out)-1):
-#         output.write(x)
-#     else:
-#         output.write(x + '\n')
+#     output.write(x+'\n')
+for x in out:
+    if(out.index(x) == len(out)-1):
+        output.write(x)
+    else:
+        output.write(x + '\n')
 
 output.close()
 
