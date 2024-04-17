@@ -78,8 +78,11 @@ def int_to_binary(number):
         binary += str(bit)
         fraction -= bit
     return binary
-
+counter = 1
 def print_register():
+    global counter
+    print("Counter is - ", counter)
+    counter+=1
     for reg in registers.values():
         print(reg.address+"->"+reg.value,end=" ")
     print('\n')
@@ -136,11 +139,15 @@ line_out = []
 pc = 0 # programm counter
 
 while pc < len(lines)*4:
+
+    print("R19 ",registers["10011"].value)
     line=lines[int(pc/4)]
     line=line.strip()
+    # if line == "00000000000000000000000001100011":
+    #     break
     oppcode=line[25:32] #line has  \n in last
     #print(len(lines)*4)
-
+    print("flag 1")
     if oppcode == R_encoding.R_oppcode:
         print("PC->",pc)
         print("R TYPE EXECUTING",end='->')
@@ -221,7 +228,8 @@ while pc < len(lines)*4:
                     c+='0'
             registers[rd].value=c
             print("and")
-        print_register()
+        print(print_register())
+
     if oppcode in I_encoding.I_oppcode.values():
         print("PC->",pc)
         print("I TYPE EXECUTING",end="->")
@@ -247,18 +255,34 @@ while pc < len(lines)*4:
                 print("triggered",end="")
             print('\n')
         if oppcode == I_encoding.I_oppcode["jalr"]:
-            print('jalr')
-            registers[rd].value = binary_to_specified_len("0"+bin(pc+4)[2:],32)
-            # print(binary_to_specified_len(bin(pc+4)[2:],32))
-            print("Register rs1->value", registers[rs1].value)
-            print("imm value",imm)
+            print(binary_to_specified_len('0'+bin(pc+4)[2:],32))
+            registers[rd].value = binary_to_specified_len('0'+bin(pc+4)[2:],32)
+            print(registers[rs1].value)
+            print(imm)
             final_ans = two_complement_addition(registers[rs1].value, imm)
+            print(final_ans)
             #make last digit zero
-            final_ans=final_ans[:31]+"0"
-            # print("Final ans is :", final_ans)
+            final_ans=final_ans[0:31] + '0'
+            print(final_ans)
             pc = two_comp_to_base_10(final_ans)
-            
-        print_register()        
+            print('jalr')
+            print(print_register())
+            registers["00000"].value="0"*32
+            bin_pc = '0' + bin(pc)[2:]
+            line_out = '0b' + binary_to_specified_len(bin_pc,32) + ' '
+
+            for register in registers:
+                line_out += '0b'+registers[register].value+' '
+
+            line_out.rstrip(' ')
+            out += [line_out]
+            print("Ending the instruction")
+
+            continue
+            # print('jalr')
+        print(print_register())
+        # print("PC->",pc)
+
     if oppcode == S_encoding.S_oppcode:
         print("PC->",pc)
         print("S TYPE EXECUTING",end="->")
@@ -272,62 +296,89 @@ while pc < len(lines)*4:
             memory_address = "0x000" + hex(memory_address)[2:]
 
             memory[memory_address] = binary_to_specified_len(registers[rs2].value,32)
-        print_register()
+        print(print_register())
+
     
 
     if oppcode == B_encoding.B_oppcode:
+        print("B TYPE EXECUTING")
         print("PC->",pc)
-        print("B TYPE EXECUTING",end="->")
         # to be done by sanchay
         imm=line[0] + line[-8] + line[-31:-25] + line[-12:-8] + "0"
         funct3=line[-15:-12]
         rs2=line[-25:-20]
         rs1=line[-20:-15]
-        rs2_val=two_comp_to_base_10(registers[rs1].value)
-        rs1_val=two_comp_to_base_10(registers[rs2].value)
-        # print("value of rs1 and rs2",rs1_val,rs2_val)
+        print(rs1, rs2)
+        print(two_comp_to_base_10(registers[rs1].value))
+        rs2_val=two_comp_to_base_10(registers[rs2].value)
+        rs1_val=two_comp_to_base_10(registers[rs1].value)
+        # print(rs1_val,rs2_val)
         rs1_unsigned=int(registers[rs1].value,2)
         rs2_unsigned=int(registers[rs2].value,2)
 
         if funct3 == B_encoding.B_funct3["beq"]:
+            print("Beq")
             if(rs1_val==rs2_val):
-                print("beq",end="->")
-                pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
-                print("PC updated to",pc)
+                if(two_comp_to_base_10(imm) != 0):
+                    pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
+                    # print(pc)
+                    out+=[out[-1]]
+                    print_register()
+                    continue
+                else:
+                    # out+=[out[-1]]
+                    # print_register()
+                    print("Breaked over")
+                    break
 
         if funct3 == B_encoding.B_funct3["bne"]:
-            print("bne",end="->")
+            print("bne")
             if(rs1_val!=rs2_val):
-                print("condn triggered",end="->")
+                print("Condn triggered")
+                print(rs1_val,rs2_val)
                 pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
-                print("PC updated to",pc)
-                print()
+                print(pc)
+                out+=[out[-1]]
+                print_register()
                 continue
+            else:
+                print_register()
+                print("Condn not triggered")
         if funct3 == B_encoding.B_funct3["bge"]:
+            print('bge')
             if(rs1_val>=rs2_val):
-                print("condn triggered",end="->")
                 pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
-                print("PC updated to",pc)
-                print()
+                out+=[out[-1]]
+                print_register()
                 continue
+            print_register()
         if funct3 == B_encoding.B_funct3["bgeu"]:
+            print("bgeu")
             if(rs1_unsigned>=rs2_unsigned):
-                print("condn triggered",end="->")
                 pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
-                print("PC updated to",pc)
+                out+=[out[-1]]
+                print_register()
+                continue
+            print_register()
         if funct3 == B_encoding.B_funct3["blt"]:
+            print("blt")
             if(rs1_val<rs2_val):
-                print("condn triggered",end="->")
                 pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
-                print("PC updated to",pc)
+                out+=[out[-1]]
+                print_register()
+                continue
+            print_register()
         if funct3 == B_encoding.B_funct3["bltu"]:
+            print("bltu")
             if(rs1_unsigned<rs2_unsigned):
-                print("condn triggered",end="->")
                 pc+=two_comp_to_base_10(binary_to_specified_len(imm,32))
-                print("PC updated to",pc)
+                out+=[out[-1]]
+                print_register()
+                continue
+            print_register()
         # what if pc increase lets say currently we at 0 but a B instruction causes it to get 8
         # so now do we straight away goto 8 or do we go to 12 because pc+=4 after every iteration?
-        print()
+        # print(pc)
 
     if oppcode in U_encoding.U_oppcode.values():
         # to be done by pranav
@@ -356,7 +407,8 @@ while pc < len(lines)*4:
                 print("lui")
                 val = binary_to_specified_len(imm,32)   #Extending binary_imm to 32 bits
                 registers[rd].value = val               #Storing 32 bit value in register rd
-            print_register()
+            print(print_register())
+
 
     if oppcode == J_encoding.J_oppcode:
         print("PC->",pc)
@@ -366,18 +418,31 @@ while pc < len(lines)*4:
         imm = line[0] + line[12:20]  + line[11] +line[1:11] #imm[20:1]
         rd = line[20:25]
         # ret_add = pc + 4
-        ret_add ="0"+ bin(pc + 4)[2:]
+        ret_add ='0' + bin(pc + 4)[2:]
+        print(ret_add)
         ret_add = binary_to_specified_len(ret_add, 32)
-        # print("Ret add" ,ret_add)
         registers[rd].value = ret_add
-
+        temp_pc = pc
         #rd = ret_add
         ##PC = PC + sext({imm[20:1],1'b0})
         imm_bits = imm + '0'  # '1b0' added to imm_bits extending it to 21 bits
         # extended_imm = binary_to_specified_len((imm_bits), 32)  # Perform sign extension with LSB=0
         pc += two_comp_to_base_10(imm_bits)
-        print_register()
+        print(pc)
+        print(print_register())
+        registers["00000"].value="0"*32
+        bin_pc = '0' + bin(pc)[2:]
+        line_out = '0b' + binary_to_specified_len(bin_pc,32) + ' '
+        print(line_out)
+        for register in registers:
+            line_out += '0b'+registers[register].value+' '
+
+        line_out.rstrip(' ')
+        out += [line_out]
+        print("Ending the instruction")
         continue
+
+    registers["00000"].value="0"*32
     bin_pc = '0' + bin(pc+4)[2:]
     line_out = '0b' + binary_to_specified_len(bin_pc,32) + ' '
 
@@ -386,9 +451,9 @@ while pc < len(lines)*4:
 
     line_out.rstrip(' ')
     out += [line_out]
-
+    print("Ending the instruction")
     pc += 4
-    time.sleep(1)
+    # time.sleep(0.2)
     
     
 
