@@ -84,7 +84,7 @@ def print_register():
     print("Counter is - ", counter)
     counter+=1
     for reg in registers.values():
-        print(reg.address+"->"+reg.value,end=" ")
+        print(reg.address+"->",reg.value,end=" ",sep="")
     print('\n')
 input_file,output_file = sys.argv[1],sys.argv[2]
 
