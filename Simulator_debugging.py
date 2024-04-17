@@ -94,9 +94,19 @@ def extender(line , l, status):
     else:
         line = "0" * l + line
     
-
-
 from registers import Register,register_address
+    
+def find_reg(word):
+    for x, y in register_address.items():
+        if y==word:
+            return x
+
+bonus={
+    "0000000": "halt",
+    "0000001": "rst",
+    "0000100": "mul",
+    "0000101": "rvrs"
+}
 
 registers={}
 for register_val in register_address.values():
@@ -153,7 +163,6 @@ pc = 0 # programm counter
 
 while pc < len(lines)*4:
     # time.sleep(1)
-    print("R19 ",registers["10011"].value)
     line=lines[int(pc/4)]
     line=line.strip()
     temp_pc=pc
@@ -162,7 +171,7 @@ while pc < len(lines)*4:
     #     break
     oppcode=line[25:32] #line has  \n in last
     #print(len(lines)*4)
-    print("flag 1")
+    # print("flag 1")
     if oppcode == R_encoding.R_oppcode:
         print("PC->",pc)
         print("R TYPE EXECUTING",end='->')
@@ -174,10 +183,11 @@ while pc < len(lines)*4:
 
         a=registers[rs1].value
         b=registers[rs2].value
-
+        print("register are",rs1, rs2, rd)
+        print("Registers are ", find_reg(rs1), find_reg(rs2), find_reg(rd))
         a_value=two_comp_to_base_10(a)
         b_value=two_comp_to_base_10(b)
-
+        print("value of a and b",a,b)
         a_unsigned=int(a,2)
         b_unsigned=int(b,2)
 
@@ -310,7 +320,7 @@ while pc < len(lines)*4:
             # sw rs2, imm[11:0](rs1)
             print("sw")
             rs2,rs1,imm = line[-25:-20],line[-20:-15],line[-32:-25] + line[-12:-7]
-        
+            print("Registers are" ,find_reg(rs1),find_reg(rs2))
             memory_address = two_comp_to_base_10(registers[rs1].value) + two_comp_to_base_10(imm)
             memory_address = "0x000" + hex(memory_address)[2:]
 
@@ -338,7 +348,7 @@ while pc < len(lines)*4:
         rs2_unsigned=int(registers[rs2].value,2)
 
         if funct3 == B_encoding.B_funct3["beq"]:
-                
+
             print("Beq")
             print("Temp pc is now ",temp_pc)
 
@@ -548,6 +558,37 @@ while pc < len(lines)*4:
         out += [line_out]
         print("Ending the instruction")
         continue
+    
+    if oppcode in bonus.keys():
+        if bonus[oppcode]=="halt":
+            registers["00000"].value="0"*32
+            bin_pc = '0' + bin(temp_pc+4)[2:]
+            line_out = '0b' + binary_to_specified_len(bin_pc,32) + ' '
+
+            for register in registers:
+                line_out += '0b'+registers[register].value+' '
+
+            line_out.rstrip(' ')
+            out += [line_out]
+            print("Halt triggered End of program-dead")
+            break
+        if bonus[oppcode]=="mul":
+            rs1, rs2, rd = line[-20:-15], line[-25:-20], line[-12:-7]
+            final_ans = two_comp_to_base_10(registers[rs1].value) * two_comp_to_base_10(registers[rs2].value)
+            bin_value = bin(final_ans)
+            if bin_value[0]=='-':
+                bin_value = binary_to_specified_len(twos_complement("0"+bin_value[3:]))
+            elif bin_value[0]=="-":
+                bin_value = binary_to_specified_len("0"+bin_value[2:],32)
+            register[rd]=bin_value
+        if bonus[oppcode]=="rst":
+            for reg in registers:
+                registers[reg].value="0"*32
+            print("Reset triggered")
+            print_register()
+        if bonus[oppcode]=="rvrs":
+            rs1, rd=line[-20:-15], line[-12:-7]
+            registers[rd].value = registers[rs1].value[::-1]
 
     registers["00000"].value="0"*32
     bin_pc = '0' + bin(temp_pc+4)[2:]
