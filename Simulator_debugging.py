@@ -5,7 +5,7 @@ import Encoding.B_encoding as B_encoding
 import Encoding.U_encoding as U_encoding
 import Encoding.J_encoding as J_encoding
 import sys
-
+import time
 def binary_to_specified_len(bin,l):
     return (bin[0]*(l-len(bin))) + bin
 
@@ -342,23 +342,23 @@ while pc < len(lines)*4:
 
 
     if oppcode == J_encoding.J_oppcode:
+        print("PC->",pc)
         # done by nischay
-        print("J TYPE EXECUTING")
-
-        imm = line[0] + line[10:20] +line[9] + line[1:9]
-        #rd = line[-25:-20]
-        ret_add = pc
-        ret_add = int_to_binary(ret_add)
+        print("J TYPE EXECUTING",end="->")
+        print("jal")
+        imm = line[0] + line[12:20]  + line[11] +line[1:11] #imm[20:1]
+        rd = line[20:25]
+        # ret_add = pc + 4
+        ret_add = bin(pc + 4)[2:]
         ret_add = binary_to_specified_len(ret_add, 32)
-        add = binary_to_specified_len("100", 32)
-        rd = two_complement_addition(ret_add, add)
+        registers[rd].value = ret_add
+
         #rd = ret_add
         ##PC = PC + sext({imm[20:1],1'b0})
-        imm_bits = imm[-20:]  # Extract bits 1 to 20 from immediate value
-        extended_imm = binary_to_specified_len((imm_bits[0:19] + "0"), 32)  # Perform sign extension with LSB=0
-        pc += two_comp_to_base_10(extended_imm)
-        print(pc)
-
+        imm_bits = imm + '0'  # '1b0' added to imm_bits extending it to 21 bits
+        # extended_imm = binary_to_specified_len((imm_bits), 32)  # Perform sign extension with LSB=0
+        pc += two_comp_to_base_10(imm_bits)
+        print(print_register())
 
     bin_pc = '0' + bin(pc+4)[2:]
     line_out = '0b' + binary_to_specified_len(bin_pc,32) + ' '
@@ -370,6 +370,7 @@ while pc < len(lines)*4:
     out += [line_out]
 
     pc += 4
+    time.sleep(1)
     
     
 
