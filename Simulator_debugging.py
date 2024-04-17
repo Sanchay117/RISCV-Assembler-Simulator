@@ -140,14 +140,14 @@ pc = 0 # programm counter
 
 while pc < len(lines)*4:
 
-    print("R19 ",registers["10011"].value)
+    #print("R19 ",registers["10011"].value)
     line=lines[int(pc/4)]
     line=line.strip()
     # if line == "00000000000000000000000001100011":
     #     break
     oppcode=line[25:32] #line has  \n in last
     #print(len(lines)*4)
-    print("flag 1")
+    #print("flag 1")
     if oppcode == R_encoding.R_oppcode:
         print("PC->",pc)
         print("R TYPE EXECUTING",end='->')
@@ -382,32 +382,33 @@ while pc < len(lines)*4:
 
     if oppcode in U_encoding.U_oppcode.values():
         # to be done by pranav
-        print("PC->",pc)
-        print("U TYPE EXECUTING",end="->")
+        #print("PC->",pc)
+        #print("U TYPE EXECUTING",end="->")
 
 
-        if oppcode == U_encoding.U_oppcode:
+        #if oppcode == U_encoding.U_oppcode:
+        print("Hi")
         
 
-            rd = line[-12:-7]
-            imm = line[-32:-12]
-            if(oppcode == "0010111"):
-            # auipc rd, imm[31:12]
-                print("auipc")
-                val1 = bin(pc)[2:]   #converting integer PC to 2's complement
-                val1 = binary_to_specified_len(val1,32)   #Extending binary PC to 32 bits
-  
-                val2 = binary_to_specified_len(imm,32)  #Extending binary_immediate to 32 bits
+        rd = line[-12:-7]
+        imm = line[-32:-12]
+        if(oppcode == "0010111"):
+        # auipc rd, imm[31:12]
+            print("auipc")
+            val1 = bin(pc)[2:]   #converting integer PC to 2's complement
+            val1 = binary_to_specified_len(val1,32)   #Extending binary PC to 32 bits
 
-                sum = two_complement_addition(val1, val2) # Adding both values
-                registers[rd].value = sum   #storing value in register rd
+            val2 = binary_to_specified_len(imm,32)  #Extending binary_immediate to 32 bits
+
+            sum = two_complement_addition(val1, val2) # Adding both values
+            registers[rd].value = sum   #storing value in register rd
 
 
-            if(oppcode == "0110111"):
-                print("lui")
-                val = binary_to_specified_len(imm,32)   #Extending binary_imm to 32 bits
-                registers[rd].value = val               #Storing 32 bit value in register rd
-            print(print_register())
+        if(oppcode == "0110111"):
+            print("lui")
+            val = binary_to_specified_len(imm,32)   #Extending binary_imm to 32 bits
+            registers[rd].value = val               #Storing 32 bit value in register rd
+        print(print_register())
 
 
     if oppcode == J_encoding.J_oppcode:
