@@ -73,7 +73,7 @@ def int_to_binary(number):
         integer_part //= 2
     max_digits = 16  
     while fraction > 0 and len(binary) <= max_digits:
-        fraction *= 2
+        fraction *= 2j
         bit = int(fraction)
         binary += str(bit)
         fraction -= bit
@@ -87,6 +87,14 @@ def print_register():
         print(reg.address+"->"+reg.value,end=" ")
     print('\n')
 input_file,output_file = sys.argv[1],sys.argv[2]
+
+def extender(line , l, status):
+    if status == "left":
+        line = line + "0" * l
+    else:
+        line = "0" * l + line
+    
+
 
 from registers import Register,register_address
 
@@ -128,7 +136,12 @@ memory={
     "0x00010078":"0"*32,
     "0x0001007c":"0"*32,
 }
-
+def extender_zero(word, l):
+    length = len(word)
+    if length == l:
+        return word
+    return "0"*(l-length) + word
+    
 inp=open(input_file,'r')
 lines=inp.readlines()
 inp.close()
@@ -140,14 +153,14 @@ pc = 0 # programm counter
 
 while pc < len(lines)*4:
 
-    #print("R19 ",registers["10011"].value)
+    print("R19 ",registers["10011"].value)
     line=lines[int(pc/4)]
     line=line.strip()
     # if line == "00000000000000000000000001100011":
     #     break
     oppcode=line[25:32] #line has  \n in last
     #print(len(lines)*4)
-    #print("flag 1")
+    print("flag 1")
     if oppcode == R_encoding.R_oppcode:
         print("PC->",pc)
         print("R TYPE EXECUTING",end='->')
@@ -178,6 +191,7 @@ while pc < len(lines)*4:
             registers[rd].value=c
         if funct7==R_encoding.R_funct7["slt"] and funct3 == R_encoding.R_funct3["slt"]:
             print("slt",end='->')
+            print(rs1, rs2, rd)
             if a_value<b_value:
                 registers[rd].value="0"*31 + "1"
                 print("triggered",end="")
@@ -297,7 +311,8 @@ while pc < len(lines)*4:
 
             memory[memory_address] = binary_to_specified_len(registers[rs2].value,32)
         print(print_register())
-
+        print("Memmory is :",memory_address)
+     
     
 
     if oppcode == B_encoding.B_oppcode:
@@ -379,28 +394,26 @@ while pc < len(lines)*4:
         # what if pc increase lets say currently we at 0 but a B instruction causes it to get 8
         # so now do we straight away goto 8 or do we go to 12 because pc+=4 after every iteration?
         # print(pc)
-
+        
     if oppcode in U_encoding.U_oppcode.values():
         # to be done by pranav
-        #print("PC->",pc)
-        #print("U TYPE EXECUTING",end="->")
-
-
-        #if oppcode == U_encoding.U_oppcode:
-        print("Hi")
-        
+        print("PC->",pc)
+        print("U TYPE EXECUTING",end="->")
 
         rd = line[-12:-7]
         imm = line[-32:-12]
+        imm = imm + "0" * 12
+        print("imm is: ",imm)
         if(oppcode == "0010111"):
         # auipc rd, imm[31:12]
             print("auipc")
-            val1 = bin(pc)[2:]   #converting integer PC to 2's complement
+            val1 = "0" + bin(pc)[2:]   #converting integer PC to 2's complement
             val1 = binary_to_specified_len(val1,32)   #Extending binary PC to 32 bits
 
             val2 = binary_to_specified_len(imm,32)  #Extending binary_immediate to 32 bits
 
             sum = two_complement_addition(val1, val2) # Adding both values
+            print("sum", sum)
             registers[rd].value = sum   #storing value in register rd
 
 
@@ -431,6 +444,7 @@ while pc < len(lines)*4:
         pc += two_comp_to_base_10(imm_bits)
         print(pc)
         print(print_register())
+
         registers["00000"].value="0"*32
         bin_pc = '0' + bin(pc)[2:]
         line_out = '0b' + binary_to_specified_len(bin_pc,32) + ' '
