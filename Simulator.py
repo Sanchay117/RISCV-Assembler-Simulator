@@ -581,7 +581,7 @@ while pc < len(lines)*4:
             bin_value = bin(final_ans)
             if bin_value[0]=='-':
                 bin_value = binary_to_specified_len(twos_complement("0"+bin_value[3:]))
-            elif bin_value[0]=="-":
+            elif bin_value[0]!="-":
                 bin_value = binary_to_specified_len("0"+bin_value[2:],32)
             register[rd].value=bin_value
         if bonus[oppcode]=="rst":
